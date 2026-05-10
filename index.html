@@ -45,12 +45,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;background:rgba(
 
 /* HERO */
 .hero{min-height:100vh;padding-top:68px;position:relative;overflow:hidden;display:flex;align-items:center}
-.hero-bg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1}
-.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0.75}
+.hero-bg{position:fixed;top:0;left:0;right:0;bottom:0;z-index:-1;background-image:url('ece-ai-hero.png');background-size:90%;background-position:center top;background-repeat:no-repeat;opacity:0.8}
+.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0.8;transform:scale(0.9);transform-origin:center top}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,7,15,0.92) 0%,rgba(7,7,15,0.55) 50%,rgba(7,7,15,0.1) 100%)}
 .hero-glow{position:fixed;top:20%;left:10%;width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.12) 0%,transparent 70%);pointer-events:none;z-index:-1}
 
-.hero-inner{max-width:1200px;margin:0 auto;padding:60px 24px;position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;width:100%}
+.hero-inner{max-width:1200px;margin:0 auto;padding:60px 24px;position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;width:100%;min-height:calc(100vh - 68px)}
 .hero-left{}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);font-size:12px;font-weight:600;color:var(--purple-light);letter-spacing:.05em;margin-bottom:24px}
 .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--purple-light);animation:pulse 2s ease-in-out infinite}
@@ -240,14 +240,13 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
       <a href="#fiyatlandirma">Fiyatlandırma</a>
       <a href="#iletisim">İletişim</a>
     </div>
-    <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="nav-cta">Ücretsiz Demo</a>
+    <a href="https://wa.me/908503031401?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="nav-cta">Ücretsiz Demo</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg">
-    <img src="ece-ai-hero.png" alt="Ece AI" class="hero-img">
     <div class="hero-overlay"></div>
   </div>
   <div class="hero-glow"></div>
@@ -277,66 +276,11 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
         </div>
       </div>
       <div class="hero-btns">
-        <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında ücretsiz demo talep ediyorum" target="_blank" class="btn-primary">Ücretsiz Demo Başlat →</a>
+        <a href="https://wa.me/908503031401?text=Merhaba, Ece AI hakkında ücretsiz demo talep ediyorum" target="_blank" class="btn-primary">Ücretsiz Demo Başlat →</a>
         <a href="#nasil-calisir" class="btn-secondary">▶ Nasıl Çalışır?</a>
       </div>
     </div>
-    <div class="hero-right">
-      <div class="whatsapp-card">
-        <div class="wa-header">
-          <div class="wa-logo">💬</div>
-          <div class="wa-title">WhatsApp</div>
-          <div class="wa-time">şimdi</div>
-        </div>
-        <div class="wa-new">Yeni randevu oluşturuldu!</div>
-        <div class="wa-row"><span>Müşteri</span><span>Ayşe Yılmaz</span></div>
-        <div class="wa-row"><span>Tarih</span><span>24 Mayıs 2026</span></div>
-        <div class="wa-row"><span>Saat</span><span>14:30</span></div>
-        <div class="wa-row"><span>Hizmet</span><span>Saç Kesimi</span></div>
-        <div class="wa-link">Takvime Git <span>›</span></div>
-      </div>
-      <div class="voice-card">
-        <div class="voice-dot"></div>
-        <div class="voice-text">Ece AI görüşüyor...</div>
-        <div class="wave">
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
-      </div>
-      <div class="calendar-card">
-        <div class="cal-header">
-          <div class="cal-title">Bugünkü Randevular</div>
-          <div class="cal-icon">📅</div>
-        </div>
-        <div class="cal-row">
-          <div class="cal-time">10:00</div>
-          <div class="cal-name">Mehmet Aksoy</div>
-          <div class="cal-service">✂ Saç Kesimi</div>
-        </div>
-        <div class="cal-row">
-          <div class="cal-time">11:30</div>
-          <div class="cal-name">Zeynep Kara</div>
-          <div class="cal-service">🎨 Saç Boyama</div>
-        </div>
-        <div class="cal-row active">
-          <div class="cal-time">14:30</div>
-          <div class="cal-name">Ayşe Yılmaz</div>
-          <div class="cal-service active-svc">✂ Saç Kesimi</div>
-        </div>
-        <div class="cal-row">
-          <div class="cal-time">16:00</div>
-          <div class="cal-name">Ahmet Demir</div>
-          <div class="cal-service">🪒 Sakal Traşı</div>
-        </div>
-        <div class="cal-row">
-          <div class="cal-time">17:30</div>
-          <div class="cal-name">Fatma Yıldız</div>
-          <div class="cal-service">💅 Manikür</div>
-        </div>
-      </div>
-    </div>
+
   </div>
 </section>
 
@@ -468,7 +412,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>Kurulum ve destek dahil</div>
           <div class="pf"><div class="pf-check">✓</div>Mevcut numaranızla çalışır</div>
         </div>
-        <button class="price-cta secondary" onclick="window.open('https://wa.me/905334111477?text=Temel paket hakkında bilgi almak istiyorum','_blank')">Hemen Başla</button>
+        <button class="price-cta secondary" onclick="window.open('https://wa.me/908503031401?text=Temel paket hakkında bilgi almak istiyorum','_blank')">Hemen Başla</button>
       </div>
       <div class="price-card featured">
         <div class="price-badge">PRO</div>
@@ -482,7 +426,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>İptal & hatırlatma yönetimi</div>
           <div class="pf"><div class="pf-check">✓</div>Öncelikli destek</div>
         </div>
-        <button class="price-cta" onclick="window.open('https://wa.me/905334111477?text=Pro paket hakkında bilgi almak istiyorum','_blank')">Pro'ya Geç</button>
+        <button class="price-cta" onclick="window.open('https://wa.me/908503031401?text=Pro paket hakkında bilgi almak istiyorum','_blank')">Pro'ya Geç</button>
       </div>
     </div>
   </div>
@@ -495,13 +439,13 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
     <h2 class="section-title">Demo için bize<br>ulaşın.</h2>
     <div class="contact-wrap">
       <div class="contact-info">
-        <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="contact-item">
+        <a href="https://wa.me/908503031401?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="contact-item">
           <div class="contact-icon">💬</div>
-          <div><div class="contact-label">WhatsApp</div><div class="contact-value">+90 533 411 14 77</div></div>
+          <div><div class="contact-label">WhatsApp</div><div class="contact-value">0850 303 14 01</div></div>
         </a>
-        <a href="mailto:selimgenc@gmail.com" class="contact-item">
+        <a href="mailto:supportbdlabs@gmail.com" class="contact-item">
           <div class="contact-icon">✉️</div>
-          <div><div class="contact-label">E-posta</div><div class="contact-value">selimgenc@gmail.com</div></div>
+          <div><div class="contact-label">E-posta</div><div class="contact-value">supportbdlabs@gmail.com</div></div>
         </a>
         <div class="contact-item">
           <div class="contact-icon">📍</div>
@@ -534,7 +478,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           </select>
         </div>
         <div class="form-group"><label>Mesaj</label><textarea placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
-        <button class="form-submit" onclick="window.open('https://wa.me/905334111477?text=Merhaba, demo talep ediyorum','_blank')">Demo Talep Et →</button>
+        <button class="form-submit" onclick="window.open('https://wa.me/908503031401?text=Merhaba, demo talep ediyorum','_blank')">Demo Talep Et →</button>
       </div>
     </div>
   </div>
@@ -560,15 +504,14 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
       </div>
       <div class="footer-col">
         <h4>Şirket</h4>
-        <a href="#">Hakkımızda</a>
-        <a href="#">İletişim</a>
-        <a href="#">Blog</a>
+        <a href="#iletisim">Hakkımızda</a>
+        <a href="#iletisim">İletişim</a>
       </div>
       <div class="footer-col">
         <h4>Yasal</h4>
-        <a href="#">Gizlilik Politikası</a>
-        <a href="#">KVKK</a>
-        <a href="#">Kullanım Koşulları</a>
+        <a href="#" onclick="openModal('gizlilik');return false;">Gizlilik Politikası</a>
+        <a href="#" onclick="openModal('kvkk');return false;">KVKK</a>
+        <a href="#" onclick="openModal('kullanim');return false;">Kullanım Koşulları</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -577,6 +520,117 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
     </div>
   </div>
 </footer>
+
+<!-- MODALS -->
+<style>
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--bdr-p);border-radius:24px;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;padding:40px;position:relative}
+.modal-close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);border:1px solid var(--bdr);color:var(--txt2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(124,58,237,0.2);color:var(--txt)}
+.modal-title{font-size:22px;font-weight:800;margin-bottom:6px;color:var(--txt)}
+.modal-date{font-size:11px;color:var(--txt3);letter-spacing:.05em;margin-bottom:24px}
+.modal-body{font-size:14px;color:var(--txt2);line-height:1.9}
+.modal-body h3{font-size:15px;font-weight:700;color:var(--txt);margin:20px 0 8px}
+.modal-body p{margin-bottom:12px}
+.modal-body ul{padding-left:20px;margin-bottom:12px}
+.modal-body ul li{margin-bottom:6px}
+</style>
+
+<!-- Gizlilik Politikası -->
+<div class="modal-overlay" id="modal-gizlilik" onclick="closeOnOverlay(event,'gizlilik')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('gizlilik')">✕</button>
+    <div class="modal-title">Gizlilik Politikası</div>
+    <div class="modal-date">Son güncelleme: Mayıs 2026</div>
+    <div class="modal-body">
+      <p>BD Labs olarak kişisel verilerinizin güvenliği ve gizliliği konusunda azami özeni göstermekteyiz. Bu politika, hizmetlerimizi kullanırken toplanan verilerin nasıl işlendiğini açıklamaktadır.</p>
+      <h3>Toplanan Veriler</h3>
+      <p>Hizmetlerimizi kullanırken ad, telefon numarası, randevu bilgileri ve ses kayıtları gibi veriler toplanabilir. Bu veriler yalnızca hizmetin sağlanması amacıyla kullanılır.</p>
+      <h3>Verilerin Kullanımı</h3>
+      <ul>
+        <li>Randevu oluşturma ve yönetimi</li>
+        <li>WhatsApp bildirimleri gönderme</li>
+        <li>Hizmet kalitesinin artırılması</li>
+        <li>Yasal yükümlülüklerin yerine getirilmesi</li>
+      </ul>
+      <h3>Verilerin Paylaşımı</h3>
+      <p>Kişisel verileriniz, yasal zorunluluklar dışında üçüncü taraflarla paylaşılmaz. Hizmet sağlayıcılarımız (OpenAI, Google Firebase) ile yalnızca gerekli ölçüde veri paylaşımı yapılmaktadır.</p>
+      <h3>Veri Güvenliği</h3>
+      <p>Verileriniz şifreli bağlantılar üzerinden iletilmekte ve güvenli sunucularda saklanmaktadır.</p>
+      <h3>İletişim</h3>
+      <p>Gizlilik politikamıza ilişkin sorularınız için: <strong>0850 303 14 01</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- KVKK -->
+<div class="modal-overlay" id="modal-kvkk" onclick="closeOnOverlay(event,'kvkk')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('kvkk')">✕</button>
+    <div class="modal-title">KVKK Aydınlatma Metni</div>
+    <div class="modal-date">6698 Sayılı Kişisel Verilerin Korunması Kanunu Kapsamında</div>
+    <div class="modal-body">
+      <p>BD Labs olarak, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca veri sorumlusu sıfatıyla aşağıdaki bilgileri sizinle paylaşmak isteriz.</p>
+      <h3>Veri Sorumlusu</h3>
+      <p>BD Labs — Muğla / Türkiye</p>
+      <h3>İşlenen Kişisel Veriler</h3>
+      <ul>
+        <li>Ad ve soyad</li>
+        <li>Telefon numarası</li>
+        <li>Randevu tarihi ve saati</li>
+        <li>Ses kayıtları (görüşme süresince)</li>
+      </ul>
+      <h3>Kişisel Verilerin İşlenme Amacı</h3>
+      <ul>
+        <li>Randevu hizmetinin sağlanması</li>
+        <li>İşletme sahibine bildirim iletilmesi</li>
+        <li>Hizmet kalitesinin geliştirilmesi</li>
+      </ul>
+      <h3>Kişisel Verilerin Aktarılması</h3>
+      <p>Kişisel verileriniz, hizmetin ifası için zorunlu olan teknik altyapı sağlayıcılarına (yapay zekâ ve bulut hizmetleri) aktarılabilir.</p>
+      <h3>Haklarınız</h3>
+      <p>KVKK'nın 11. maddesi kapsamında kişisel verilerinize ilişkin her türlü talep için <strong>0850 303 14 01</strong> numaralı hattımızı arayabilirsiniz.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Kullanım Koşulları -->
+<div class="modal-overlay" id="modal-kullanim" onclick="closeOnOverlay(event,'kullanim')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('kullanim')">✕</button>
+    <div class="modal-title">Kullanım Koşulları</div>
+    <div class="modal-date">Son güncelleme: Mayıs 2026</div>
+    <div class="modal-body">
+      <p>BD Labs'ın sunduğu Ece AI hizmetini kullanarak aşağıdaki koşulları kabul etmiş sayılırsınız.</p>
+      <h3>Hizmet Kapsamı</h3>
+      <p>Ece AI, işletmelere yönelik yapay zekâ destekli sesli randevu asistanı hizmetidir. Hizmet, 7/24 otomatik randevu alma, takvim yönetimi ve bildirim gönderme işlevlerini kapsar.</p>
+      <h3>Abonelik ve Ödeme</h3>
+      <ul>
+        <li>Hizmet aylık abonelik modeliyle sunulmaktadır.</li>
+        <li>Abonelik her ay otomatik olarak yenilenir.</li>
+        <li>İptal talebi bir sonraki fatura döneminden önce iletilmelidir.</li>
+      </ul>
+      <h3>Kullanım Kuralları</h3>
+      <ul>
+        <li>Hizmet yalnızca yasal amaçlarla kullanılabilir.</li>
+        <li>Sistem üzerinden yanıltıcı bilgi yayılamaz.</li>
+        <li>Hesap bilgilerinin güvenliği kullanıcının sorumluluğundadır.</li>
+      </ul>
+      <h3>Sorumluluk Sınırı</h3>
+      <p>BD Labs, teknik arızalar veya mücbir sebeplerden kaynaklanan hizmet kesintilerinden sorumlu tutulamaz.</p>
+      <h3>İletişim</h3>
+      <p>Her türlü soru ve şikâyet için: <strong>0850 303 14 01</strong></p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');document.body.style.overflow=''}
+function closeOnOverlay(e,id){if(e.target===document.getElementById('modal-'+id))closeModal(id)}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){['gizlilik','kvkk','kullanim'].forEach(closeModal)}})
+</script>
 
 </body>
 </html>
