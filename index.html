@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD Labs — Ece AI Randevu Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070f;
+  --bg2:#0d0d1c;
+  --bg3:#111126;
+  --purple:#7c3aed;
+  --purple-light:#a78bfa;
+  --purple-glow:rgba(124,58,237,0.3);
+  --txt:#f0f0ff;
+  --txt2:#9898b8;
+  --txt3:#44445a;
+  --bdr:rgba(255,255,255,0.07);
+  --bdr-p:rgba(124,58,237,0.3);
+  --r:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;line-height:1.6}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:68px;background:rgba(7,7,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-mark{display:flex;align-items:center;gap:0}
+.logo-b{font-size:28px;font-weight:900;color:var(--purple);line-height:1;font-style:italic}
+.logo-d{font-size:28px;font-weight:900;color:var(--txt);line-height:1;font-style:italic}
+.logo-labs{font-size:14px;font-weight:600;color:var(--txt2);letter-spacing:3px;margin-left:6px;align-self:flex-end;margin-bottom:3px}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{color:var(--txt2);text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--txt)}
+.nav-cta{padding:10px 24px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none}
+.nav-cta:hover{background:#6d28d9;transform:translateY(-1px)}
+
+/* HERO */
+.hero{min-height:100vh;padding-top:68px;position:relative;overflow:hidden;display:flex;align-items:center}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:0.35}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,7,15,0.95) 0%,rgba(7,7,15,0.7) 55%,rgba(7,7,15,0.2) 100%)}
+.hero-glow{position:absolute;top:20%;left:10%;width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,237,0.15) 0%,transparent 70%);pointer-events:none}
+
+.hero-inner{max-width:1200px;margin:0 auto;padding:60px 24px;position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;width:100%}
+.hero-left{}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.35);font-size:12px;font-weight:600;color:var(--purple-light);letter-spacing:.05em;margin-bottom:24px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--purple-light);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-size:clamp(36px,4.5vw,58px);font-weight:900;line-height:1.08;letter-spacing:-.03em;margin-bottom:20px}
+h1 .accent{color:var(--purple-light)}
+.hero-desc{font-size:17px;color:var(--txt2);line-height:1.8;max-width:480px;margin-bottom:36px}
+.hero-features{display:flex;gap:28px;margin-bottom:36px}
+.hf{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.hf-icon{width:40px;height:40px;border-radius:10px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);display:flex;align-items:center;justify-content:center;font-size:18px}
+.hf-title{font-size:13px;font-weight:700;color:var(--txt)}
+.hf-sub{font-size:11px;color:var(--txt3)}
+.hero-btns{display:flex;gap:14px;align-items:center}
+.btn-primary{padding:14px 32px;background:var(--purple);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{background:#6d28d9;transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,0.4)}
+.btn-secondary{padding:14px 28px;background:transparent;color:var(--txt2);border:1px solid var(--bdr);border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .25s;text-decoration:none}
+.btn-secondary:hover{border-color:rgba(124,58,237,0.4);color:var(--txt)}
+
+/* HERO RIGHT — CARDS */
+.hero-right{display:flex;flex-direction:column;gap:16px;align-items:flex-end}
+.whatsapp-card{background:rgba(13,13,28,0.92);backdrop-filter:blur(20px);border:1px solid var(--bdr-p);border-radius:20px;padding:20px;width:300px;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+.wa-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.wa-logo{width:32px;height:32px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;font-size:18px}
+.wa-title{font-size:14px;font-weight:700;color:var(--txt)}
+.wa-time{font-size:11px;color:var(--txt3);margin-left:auto}
+.wa-new{color:var(--purple-light);font-size:13px;font-weight:700;margin-bottom:10px}
+.wa-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt2);margin-bottom:6px}
+.wa-row span:first-child{color:var(--txt3);font-size:11px}
+.wa-link{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--bdr);color:var(--purple-light);font-size:12px;font-weight:600;cursor:pointer}
+
+.calendar-card{background:rgba(13,13,28,0.92);backdrop-filter:blur(20px);border:1px solid var(--bdr);border-radius:20px;padding:20px;width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-title{font-size:14px;font-weight:700;color:var(--txt)}
+.cal-icon{width:28px;height:28px;border-radius:8px;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:14px}
+.cal-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;margin-bottom:6px;transition:background .2s}
+.cal-row:hover{background:rgba(255,255,255,0.03)}
+.cal-row.active{background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.3)}
+.cal-time{font-size:13px;font-weight:700;color:var(--txt);min-width:40px}
+.cal-name{font-size:13px;color:var(--txt2);flex:1}
+.cal-service{display:flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:100px;background:rgba(255,255,255,0.06);color:var(--txt2)}
+.cal-service.active-svc{background:rgba(124,58,237,0.25);color:var(--purple-light)}
+
+.voice-card{background:rgba(13,13,28,0.92);backdrop-filter:blur(20px);border:1px solid var(--bdr-p);border-radius:16px;padding:16px 20px;width:280px;display:flex;align-items:center;gap:12px}
+.voice-dot{width:10px;height:10px;border-radius:50%;background:var(--purple-light);animation:pulse 1.5s ease-in-out infinite;flex-shrink:0}
+.voice-text{font-size:13px;font-weight:600;color:var(--txt);flex-shrink:0}
+.wave{display:flex;align-items:center;gap:3px;flex:1;justify-content:center}
+.bar{width:3px;border-radius:2px;background:var(--purple-light);animation:wave 1.2s ease-in-out infinite}
+.bar:nth-child(1){height:8px;animation-delay:0s}
+.bar:nth-child(2){height:16px;animation-delay:.1s}
+.bar:nth-child(3){height:24px;animation-delay:.2s}
+.bar:nth-child(4){height:18px;animation-delay:.3s}
+.bar:nth-child(5){height:28px;animation-delay:.4s}
+.bar:nth-child(6){height:20px;animation-delay:.5s}
+.bar:nth-child(7){height:14px;animation-delay:.6s}
+.bar:nth-child(8){height:22px;animation-delay:.7s}
+.bar:nth-child(9){height:12px;animation-delay:.8s}
+.bar:nth-child(10){height:18px;animation-delay:.9s}
+.bar:nth-child(11){height:8px;animation-delay:1s}
+.bar:nth-child(12){height:14px;animation-delay:1.1s}
+@keyframes wave{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+
+/* STATS STRIP */
+.stats-strip{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:28px 0}
+.stats-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.stat{text-align:center}
+.stat-num{font-size:32px;font-weight:900;color:var(--purple-light);line-height:1}
+.stat-lbl{font-size:12px;color:var(--txt3);margin-top:6px;letter-spacing:.05em;text-transform:uppercase}
+
+/* SECTIONS */
+section{padding:100px 0}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.section-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:100px;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);font-size:11px;font-weight:700;color:var(--purple-light);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.section-title{font-size:clamp(28px,3.5vw,42px);font-weight:900;letter-spacing:-.02em;margin-bottom:14px}
+.section-sub{font-size:16px;color:var(--txt2);max-width:500px;line-height:1.7}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:60px}
+.step-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:20px;padding:28px;position:relative;transition:border-color .3s,transform .3s}
+.step-card:hover{border-color:var(--bdr-p);transform:translateY(-4px)}
+.step-num{font-size:48px;font-weight:900;color:rgba(124,58,237,0.15);line-height:1;margin-bottom:16px;font-style:italic}
+.step-icon{width:48px;height:48px;border-radius:14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.step-title{font-size:16px;font-weight:700;color:var(--txt);margin-bottom:8px}
+.step-desc{font-size:13px;color:var(--txt2);line-height:1.7}
+.step-connector{position:absolute;top:50%;right:-10px;width:20px;height:2px;background:linear-gradient(90deg,var(--purple),transparent);z-index:1}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:60px}
+.feature-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:20px;padding:28px;transition:all .3s}
+.feature-card:hover{border-color:var(--bdr-p);background:var(--bg3)}
+.feature-icon{width:52px;height:52px;border-radius:14px;background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:20px}
+.feature-title{font-size:16px;font-weight:700;margin-bottom:10px}
+.feature-desc{font-size:13px;color:var(--txt2);line-height:1.7}
+
+/* SECTORS */
+.sectors{background:var(--bg2)}
+.sectors-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+.sector-item{background:var(--bg);border:1px solid var(--bdr);border-radius:16px;padding:20px;display:flex;align-items:center;gap:14px;transition:all .3s;cursor:default}
+.sector-item:hover{border-color:var(--bdr-p);transform:translateY(-2px)}
+.sector-emoji{font-size:28px}
+.sector-name{font-size:14px;font-weight:600;color:var(--txt)}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:60px auto 0}
+.price-card{background:var(--bg2);border:1px solid var(--bdr);border-radius:24px;padding:36px;position:relative}
+.price-card.featured{border-color:var(--bdr-p);background:linear-gradient(135deg,rgba(124,58,237,0.08) 0%,var(--bg2) 100%)}
+.price-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--purple-light));border-radius:24px 24px 0 0}
+.price-badge{display:inline-block;padding:4px 12px;border-radius:100px;background:rgba(124,58,237,0.2);color:var(--purple-light);font-size:11px;font-weight:700;letter-spacing:.05em;margin-bottom:16px}
+.price-name{font-size:18px;font-weight:800;margin-bottom:6px}
+.price-desc{font-size:13px;color:var(--txt2);margin-bottom:24px}
+.price-amount{font-size:48px;font-weight:900;color:var(--txt);line-height:1}
+.price-unit{font-size:15px;color:var(--txt3);font-weight:400}
+.price-features{margin:24px 0;display:flex;flex-direction:column;gap:12px}
+.pf{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--txt2)}
+.pf-check{width:18px;height:18px;border-radius:50%;background:rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.price-cta{width:100%;padding:14px;background:var(--purple);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.price-cta:hover{background:#6d28d9;transform:translateY(-1px)}
+.price-cta.secondary{background:transparent;border:1px solid var(--bdr);color:var(--txt2)}
+.price-cta.secondary:hover{border-color:var(--bdr-p);color:var(--txt);background:rgba(124,58,237,0.05)}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:60px}
+.contact-info{display:flex;flex-direction:column;gap:24px}
+.contact-item{display:flex;align-items:center;gap:16px;padding:20px;background:var(--bg2);border:1px solid var(--bdr);border-radius:16px;text-decoration:none;color:inherit;transition:all .3s}
+.contact-item:hover{border-color:var(--bdr-p);transform:translateX(4px)}
+.contact-icon{width:44px;height:44px;border-radius:12px;background:rgba(124,58,237,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.contact-label{font-size:11px;color:var(--txt3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.contact-value{font-size:14px;font-weight:600;color:var(--txt)}
+.contact-form{background:var(--bg2);border:1px solid var(--bdr-p);border-radius:24px;padding:36px;position:relative;overflow:hidden}
+.contact-form::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--txt2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;font-family:inherit;font-size:14px;color:var(--txt);outline:none;transition:border-color .2s;resize:vertical}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--txt3)}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:rgba(124,58,237,0.5)}
+.form-group select option{background:var(--bg2)}
+.form-group textarea{min-height:120px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-submit{width:100%;padding:14px;background:linear-gradient(135deg,var(--purple),#5b21b6);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .25s;margin-top:6px}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(124,58,237,0.4)}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 24px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .logo{margin-bottom:14px}
+.footer-desc{font-size:13px;color:var(--txt3);line-height:1.7;max-width:260px}
+.footer-col h4{font-size:12px;font-weight:700;color:var(--txt2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;color:var(--txt3);text-decoration:none;margin-bottom:10px;transition:color .2s}
+.footer-col a:hover{color:var(--purple-light)}
+.footer-bottom{border-top:1px solid var(--bdr);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--txt3)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-right{align-items:flex-start}
+  .how-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  h1{font-size:32px}
+  .hero-features{flex-wrap:wrap}
+  .features-grid{grid-template-columns:1fr}
+  .sectors-grid{grid-template-columns:repeat(2,1fr)}
+  .pricing-grid{grid-template-columns:1fr}
+  .contact-wrap{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <span class="logo-b">B</span><span class="logo-d">D</span>
+      </div>
+      <span class="logo-labs">LABS</span>
+    </a>
+    <div class="nav-links">
+      <a href="#nasil-calisir">Nasıl Çalışır?</a>
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#sektorler">Sektörler</a>
+      <a href="#fiyatlandirma">Fiyatlandırma</a>
+      <a href="#iletisim">İletişim</a>
+    </div>
+    <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="nav-cta">Ücretsiz Demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <img src="ece-ai-hero.png" alt="Ece AI" class="hero-img">
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Ece AI Randevu
+      </div>
+      <h1>Telefonları <span class="accent">Ece AI</span> açar,<br>siz işinize odaklanın.</h1>
+      <p class="hero-desc">Ece AI, işletmenizi 7/24 temsil eder. Gelen aramaları karşılar, randevu oluşturur, size WhatsApp ile bildirir.</p>
+      <div class="hero-features">
+        <div class="hf">
+          <div class="hf-icon">📞</div>
+          <div class="hf-title">7/24 Kesintisiz</div>
+          <div class="hf-sub">Hizmet</div>
+        </div>
+        <div class="hf">
+          <div class="hf-icon">📅</div>
+          <div class="hf-title">Otomatik</div>
+          <div class="hf-sub">Randevu Yönetimi</div>
+        </div>
+        <div class="hf">
+          <div class="hf-icon">💬</div>
+          <div class="hf-title">Anlık WhatsApp</div>
+          <div class="hf-sub">Bildirimleri</div>
+        </div>
+      </div>
+      <div class="hero-btns">
+        <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında ücretsiz demo talep ediyorum" target="_blank" class="btn-primary">Ücretsiz Demo Başlat →</a>
+        <a href="#nasil-calisir" class="btn-secondary">▶ Nasıl Çalışır?</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="whatsapp-card">
+        <div class="wa-header">
+          <div class="wa-logo">💬</div>
+          <div class="wa-title">WhatsApp</div>
+          <div class="wa-time">şimdi</div>
+        </div>
+        <div class="wa-new">Yeni randevu oluşturuldu!</div>
+        <div class="wa-row"><span>Müşteri</span><span>Ayşe Yılmaz</span></div>
+        <div class="wa-row"><span>Tarih</span><span>24 Mayıs 2026</span></div>
+        <div class="wa-row"><span>Saat</span><span>14:30</span></div>
+        <div class="wa-row"><span>Hizmet</span><span>Saç Kesimi</span></div>
+        <div class="wa-link">Takvime Git <span>›</span></div>
+      </div>
+      <div class="voice-card">
+        <div class="voice-dot"></div>
+        <div class="voice-text">Ece AI görüşüyor...</div>
+        <div class="wave">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+      </div>
+      <div class="calendar-card">
+        <div class="cal-header">
+          <div class="cal-title">Bugünkü Randevular</div>
+          <div class="cal-icon">📅</div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-time">10:00</div>
+          <div class="cal-name">Mehmet Aksoy</div>
+          <div class="cal-service">✂ Saç Kesimi</div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-time">11:30</div>
+          <div class="cal-name">Zeynep Kara</div>
+          <div class="cal-service">🎨 Saç Boyama</div>
+        </div>
+        <div class="cal-row active">
+          <div class="cal-time">14:30</div>
+          <div class="cal-name">Ayşe Yılmaz</div>
+          <div class="cal-service active-svc">✂ Saç Kesimi</div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-time">16:00</div>
+          <div class="cal-name">Ahmet Demir</div>
+          <div class="cal-service">🪒 Sakal Traşı</div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-time">17:30</div>
+          <div class="cal-name">Fatma Yıldız</div>
+          <div class="cal-service">💅 Manikür</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-num">7/24</div><div class="stat-lbl">Kesintisiz Hizmet</div></div>
+    <div class="stat"><div class="stat-num">30"</div><div class="stat-lbl">Kurulum Süresi</div></div>
+    <div class="stat"><div class="stat-num">₺0</div><div class="stat-lbl">Ek Personel Maliyeti</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-lbl">Eş Zamanlı Görüşme</div></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="nasil-calisir">
+  <div class="container">
+    <div class="section-badge">Nasıl Çalışır?</div>
+    <h2 class="section-title">4 adımda kurulum,<br>sonsuz kolaylık.</h2>
+    <p class="section-sub">Mevcut telefonunuzdan tek bir kod çevirmeniz yeterli. Cihaz değişikliği, yeni hat veya teknik bilgi gerekmez.</p>
+    <div class="how-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">📱</div>
+        <div class="step-title">Müşteri sizi arar</div>
+        <div class="step-desc">Hâlihazırda bildiği numarayı arar. Müşteri tarafında hiçbir şey değişmez.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">Ece karşılar</div>
+        <div class="step-desc">Yapay zekâ asistanınız saniyeler içinde, doğal Türkçeyle müşteriyi karşılar.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">📅</div>
+        <div class="step-title">Randevu alınır</div>
+        <div class="step-desc">Müsait saatler kontrol edilir, randevu kaydedilir, müşteriye onay verilir.</div>
+        <div class="step-connector"></div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon">🔔</div>
+        <div class="step-title">Bildirim gelir</div>
+        <div class="step-desc">WhatsApp'ınıza anlık mesaj düşer. Tabletinizden canlı takvimi görürsünüz.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="ozellikler" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-badge">Özellikler</div>
+    <h2 class="section-title">İşletmeniz için<br>tasarlandı.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗣️</div>
+        <div class="feature-title">Doğal Türkçe Konuşma</div>
+        <div class="feature-desc">Robot sesi yok. Ece, gerçek bir asistan gibi doğal ve samimi Türkçeyle konuşur. Müşterileriniz fark etmeyebilir bile.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Akıllı Takvim Yönetimi</div>
+        <div class="feature-desc">Dolu saatleri bilir, alternatif önerir, çakışma yaratmaz. Tüm randevular otomatik senkronize edilir.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">WhatsApp Bildirimi</div>
+        <div class="feature-desc">Her yeni randevu için anlık WhatsApp bildirimi alırsınız. İptal ve değişikliklerde de haberdar edilirsiniz.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Finans & Raporlama</div>
+        <div class="feature-desc">Günlük, haftalık ve aylık randevu istatistikleri. Kaç müşteri geldi, en yoğun saatler, ciro takibi. (Pro)</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <div class="feature-title">Tablet Uygulaması</div>
+        <div class="feature-desc">Günlük takvim tek ekranda, canlı ve senkronize. İstediğiniz Android tablet ile çalışır.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">Mevcut Numaranız Geçerli</div>
+        <div class="feature-desc">Müşterileriniz aynı numarayı aramaya devam eder. Yeni hat veya cihaz değişikliği gerekmez.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORS -->
+<section id="sektorler" class="sectors">
+  <div class="container">
+    <div class="section-badge">Sektörler</div>
+    <h2 class="section-title">Her randevu bazlı<br>işletme için.</h2>
+    <p class="section-sub">Telefon çalıyorsa ve randevu alıyorsanız, Ece sizin için çalışabilir.</p>
+    <div class="sectors-grid">
+      <div class="sector-item"><div class="sector-emoji">✂️</div><div class="sector-name">Berber & Kuaför</div></div>
+      <div class="sector-item"><div class="sector-emoji">💅</div><div class="sector-name">Güzellik Salonu</div></div>
+      <div class="sector-item"><div class="sector-emoji">🦷</div><div class="sector-name">Diş Kliniği</div></div>
+      <div class="sector-item"><div class="sector-emoji">🏥</div><div class="sector-name">Klinik & Doktor</div></div>
+      <div class="sector-item"><div class="sector-emoji">🐾</div><div class="sector-name">Veteriner</div></div>
+      <div class="sector-item"><div class="sector-emoji">🔧</div><div class="sector-name">Oto Servis</div></div>
+      <div class="sector-item"><div class="sector-emoji">🏠</div><div class="sector-name">Emlakçı</div></div>
+      <div class="sector-item"><div class="sector-emoji">📸</div><div class="sector-name">Fotoğrafçı & Atölye</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="fiyatlandirma">
+  <div class="container">
+    <div style="text-align:center">
+      <div class="section-badge" style="margin:0 auto 16px">Fiyatlandırma</div>
+      <h2 class="section-title">Bir resepsiyon 30.000 TL,<br>Ece <span style="color:var(--purple-light)">499 TL</span>.</h2>
+      <p class="section-sub" style="margin:0 auto">Taahhüt yok. İstediğiniz zaman iptal edebilirsiniz.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-badge">BAŞLANGIÇ</div>
+        <div class="price-name">Temel Paket</div>
+        <div class="price-desc">Randevu almaya hemen başlayın.</div>
+        <div><span class="price-amount">499</span><span class="price-unit"> TL/ay</span></div>
+        <div class="price-features">
+          <div class="pf"><div class="pf-check">✓</div>7/24 sesli randevu asistanı</div>
+          <div class="pf"><div class="pf-check">✓</div>WhatsApp bildirimleri</div>
+          <div class="pf"><div class="pf-check">✓</div>Tablet takvim uygulaması</div>
+          <div class="pf"><div class="pf-check">✓</div>Kurulum ve destek dahil</div>
+          <div class="pf"><div class="pf-check">✓</div>Mevcut numaranızla çalışır</div>
+        </div>
+        <button class="price-cta secondary" onclick="window.open('https://wa.me/905334111477?text=Temel paket hakkında bilgi almak istiyorum','_blank')">Hemen Başla</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">PRO</div>
+        <div class="price-name">Pro Paket</div>
+        <div class="price-desc">Finans modülü ile işinizi büyütün.</div>
+        <div><span class="price-amount">799</span><span class="price-unit"> TL/ay</span></div>
+        <div class="price-features">
+          <div class="pf"><div class="pf-check">✓</div>Temel Paket'in tüm özellikleri</div>
+          <div class="pf"><div class="pf-check">✓</div>Finans & ciro raporları</div>
+          <div class="pf"><div class="pf-check">✓</div>Müşteri istatistikleri</div>
+          <div class="pf"><div class="pf-check">✓</div>İptal & hatırlatma yönetimi</div>
+          <div class="pf"><div class="pf-check">✓</div>Öncelikli destek</div>
+        </div>
+        <button class="price-cta" onclick="window.open('https://wa.me/905334111477?text=Pro paket hakkında bilgi almak istiyorum','_blank')">Pro'ya Geç</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="iletisim" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-badge">İletişim</div>
+    <h2 class="section-title">Demo için bize<br>ulaşın.</h2>
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <a href="https://wa.me/905334111477?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="contact-item">
+          <div class="contact-icon">💬</div>
+          <div><div class="contact-label">WhatsApp</div><div class="contact-value">+90 533 411 14 77</div></div>
+        </a>
+        <a href="mailto:selimgenc@gmail.com" class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div><div class="contact-label">E-posta</div><div class="contact-value">selimgenc@gmail.com</div></div>
+        </a>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div><div class="contact-label">Konum</div><div class="contact-value">Muğla / Türkiye</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🕐</div>
+          <div><div class="contact-label">Çalışma Saatleri</div><div class="contact-value">Pzt–Cmt 09:00–18:00</div></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <h3 style="font-size:20px;font-weight:800;margin-bottom:6px">Demo Talep Et</h3>
+        <p style="font-size:13px;color:var(--txt2);margin-bottom:24px">Bilgilerinizi bırakın, sizi arayalım.</p>
+        <div class="form-row">
+          <div class="form-group"><label>Adınız</label><input type="text" placeholder="Volkan Yılmaz"></div>
+          <div class="form-group"><label>Telefon</label><input type="tel" placeholder="0532 000 00 00"></div>
+        </div>
+        <div class="form-group">
+          <label>Sektör</label>
+          <select>
+            <option value="" disabled selected>Seçiniz...</option>
+            <option>Berber / Kuaför</option>
+            <option>Güzellik Salonu</option>
+            <option>Diş Kliniği</option>
+            <option>Klinik & Doktor</option>
+            <option>Veteriner</option>
+            <option>Oto Servis</option>
+            <option>Emlakçı</option>
+            <option>Diğer</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Mesaj</label><textarea placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
+        <button class="form-submit" onclick="window.open('https://wa.me/905334111477?text=Merhaba, demo talep ediyorum','_blank')">Demo Talep Et →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo" style="margin-bottom:12px;display:inline-flex">
+          <div class="logo-mark"><span class="logo-b">B</span><span class="logo-d">D</span></div>
+          <span class="logo-labs">LABS</span>
+        </a>
+        <p class="footer-desc">Türkiye'deki küçük işletmelere yapay zekâ çözümleri sunuyoruz. Ece AI ile telefonunuz 7/24 sizin için çalışır.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Ürünler</h4>
+        <a href="#">Ece AI Randevu</a>
+        <a href="#">Ece AI Personal</a>
+        <a href="#">Ece AI Teams</a>
+        <a href="#">Ece AI Health</a>
+      </div>
+      <div class="footer-col">
+        <h4>Şirket</h4>
+        <a href="#">Hakkımızda</a>
+        <a href="#">İletişim</a>
+        <a href="#">Blog</a>
+      </div>
+      <div class="footer-col">
+        <h4>Yasal</h4>
+        <a href="#">Gizlilik Politikası</a>
+        <a href="#">KVKK</a>
+        <a href="#">Kullanım Koşulları</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 BD Labs. Tüm hakları saklıdır. Muğla / Türkiye</span>
+      <span>Ece AI ile güçlendirildi 🤖</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
