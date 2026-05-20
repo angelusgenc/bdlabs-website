@@ -1549,6 +1549,10 @@ function _dmEsc(str) {
           <label>Seçilen Paket</label>
           <input type="text" id="pm-package-readonly" class="readonly-field" readonly>
         </div>
+        <div class="pm-field">
+          <label>Adres <span style="color:rgba(167,139,250,0.7)">*</span></label>
+          <input type="text" id="pm-address" placeholder="Mahalle, Cadde/Sokak, İlçe, İl">
+        </div>
 
         <button class="pm-btn" onclick="pmStep1Submit()" id="pm-devam-btn">
           Devam Et <span style="font-size:18px;line-height:1">→</span>
@@ -1653,7 +1657,7 @@ function closePaymentModal() {
     overlay.style.display = 'none';
     document.body.style.overflow = '';
     // Reset form fields
-    ['pm-company','pm-contact','pm-phone','pm-email'].forEach(function(id){
+    ['pm-company','pm-contact','pm-phone','pm-email','pm-address'].forEach(function(id){
       var el = document.getElementById(id);
       if(el) el.value = '';
     });
@@ -1691,11 +1695,13 @@ function pmStep1Submit() {
   var contact = document.getElementById('pm-contact').value.trim();
   var phone   = document.getElementById('pm-phone').value.trim();
   var email   = document.getElementById('pm-email').value.trim();
+  var address = document.getElementById('pm-address').value.trim();
 
   if (!company) { pmShakeField('pm-company'); return; }
   if (!contact) { pmShakeField('pm-contact'); return; }
   if (!phone)   { pmShakeField('pm-phone');   return; }
   if (!email || !email.includes('@')) { pmShakeField('pm-email'); return; }
+  if (!address) { pmShakeField('pm-address'); return; }
 
   var btn = document.getElementById('pm-devam-btn');
   btn.disabled = true;
@@ -1709,6 +1715,7 @@ function pmStep1Submit() {
       contact:  contact,
       phone:    phone,
       email:    email,
+      address:  address,
       package:  _pmPkg,
       price:    _pmPrice
     })
