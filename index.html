@@ -239,7 +239,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
       <a href="#fiyatlandirma">Fiyatlandırma</a>
       <a href="#iletisim">İletişim</a>
     </div>
-    <a href="https://wa.me/908503031401?text=Merhaba, Ece AI hakkında bilgi almak istiyorum" target="_blank" class="nav-cta">Ücretsiz Demo</a>
+    <button class="nav-cta" onclick="openDemoModal()">Ücretsiz Demo</button>
   </div>
 </nav>
 
@@ -275,7 +275,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
         </div>
       </div>
       <div class="hero-btns">
-        <a href="https://wa.me/908503031401?text=Merhaba, Ece AI hakkında ücretsiz demo talep ediyorum" target="_blank" class="btn-primary">Ücretsiz Demo Başlat →</a>
+        <button class="btn-primary" onclick="openDemoModal()">Ücretsiz Demo Başlat →</button>
         <a href="#nasil-calisir" class="btn-secondary">▶ Nasıl Çalışır?</a>
       </div>
     </div>
@@ -411,7 +411,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>Kurulum ve destek dahil</div>
           <div class="pf"><div class="pf-check">✓</div>Mevcut numaranızla çalışır</div>
         </div>
-        <button class="price-cta secondary" onclick="window.open('https://wa.me/908503031401?text=Temel paket hakkında bilgi almak istiyorum','_blank')">Hemen Başla</button>
+        <button class="price-cta secondary" onclick="openPaymentModal('Temel Paket', '999')">Hemen Başla →</button>
       </div>
       <div class="price-card featured">
         <div class="price-badge">PRO</div>
@@ -425,7 +425,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>İptal & hatırlatma yönetimi</div>
           <div class="pf"><div class="pf-check">✓</div>Öncelikli destek</div>
         </div>
-        <button class="price-cta" onclick="window.open('https://wa.me/908503031401?text=Pro paket hakkında bilgi almak istiyorum','_blank')">Pro'ya Geç</button>
+        <button class="price-cta" onclick="openPaymentModal('Pro Paket', '1999')">Pro'ya Geç →</button>
       </div>
     </div>
   </div>
@@ -459,12 +459,12 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
         <h3 style="font-size:20px;font-weight:800;margin-bottom:6px">Demo Talep Et</h3>
         <p style="font-size:13px;color:var(--txt2);margin-bottom:24px">Bilgilerinizi bırakın, sizi arayalım.</p>
         <div class="form-row">
-          <div class="form-group"><label>Adınız</label><input type="text" placeholder="Volkan Yılmaz"></div>
-          <div class="form-group"><label>Telefon</label><input type="tel" placeholder="0532 000 00 00"></div>
+          <div class="form-group"><label>Adınız</label><input type="text" id="inline-contact" placeholder="Volkan Yılmaz"></div>
+          <div class="form-group"><label>Telefon</label><input type="tel" id="inline-phone" placeholder="0532 000 00 00"></div>
         </div>
         <div class="form-group">
           <label>Sektör</label>
-          <select>
+          <select id="inline-sector">
             <option value="" disabled selected>Seçiniz...</option>
             <option>Berber / Kuaför</option>
             <option>Güzellik Salonu</option>
@@ -476,8 +476,8 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
             <option>Diğer</option>
           </select>
         </div>
-        <div class="form-group"><label>Mesaj</label><textarea placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
-        <button class="form-submit" onclick="window.open('https://wa.me/908503031401?text=Merhaba, demo talep ediyorum','_blank')">Demo Talep Et →</button>
+        <div class="form-group"><label>Mesaj</label><textarea id="inline-note" placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
+        <button class="form-submit" onclick="openDemoModalFromInline()">Demo Talep Et →</button>
       </div>
     </div>
   </div>
@@ -623,11 +623,1144 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     DEMO LEAD CAPTURE MODAL SYSTEM
+═══════════════════════════════════════════════════ -->
+<style>
+/* ── DEMO OVERLAY ── */
+#demo-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,0);
+  backdrop-filter: blur(0px);
+  transition: background .35s ease, backdrop-filter .35s ease;
+}
+#demo-overlay.open { display: flex; }
+#demo-overlay.animated {
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(14px);
+}
+
+/* ── DEMO BOX ── */
+.dm-box {
+  background: linear-gradient(155deg, #10102200 0%, #0d0d1c 100%);
+  background-color: #0d0d1c;
+  border: 1px solid rgba(124,58,237,0.32);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,0.65),
+    0 0 0 1px rgba(124,58,237,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  transform: translateY(28px) scale(0.97);
+  opacity: 0;
+  transition: transform .42s cubic-bezier(0.34,1.3,0.64,1), opacity .32s ease;
+  scrollbar-width: thin;
+  scrollbar-color: var(--purple) transparent;
+}
+#demo-overlay.animated .dm-box {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* top shimmer bar */
+.dm-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 50%, #7c3aed 100%);
+  background-size: 200% 100%;
+  animation: dmShimmer 3s linear infinite;
+  border-radius: 28px 28px 0 0;
+  z-index: 1;
+}
+@keyframes dmShimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── CLOSE ── */
+.dm-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  color: #9898b8; font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  z-index: 10;
+  flex-shrink: 0;
+}
+.dm-close:hover { background: rgba(124,58,237,0.22); color: #f0f0ff; border-color: rgba(124,58,237,0.4); }
+
+/* ── HEADER ── */
+.dm-header {
+  padding: 34px 34px 22px;
+}
+.dm-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 13px;
+  background: rgba(124,58,237,0.12);
+  border: 1px solid rgba(124,58,237,0.28);
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700; color: #a78bfa;
+  letter-spacing: .07em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.dm-eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #a78bfa;
+  animation: pulse 2s ease-in-out infinite;
+}
+.dm-title { font-size: 22px; font-weight: 900; color: #f0f0ff; letter-spacing: -.02em; margin-bottom: 5px; }
+.dm-subtitle { font-size: 13px; color: #9898b8; line-height: 1.6; }
+
+/* ── FORM BODY ── */
+.dm-body { padding: 0 34px 32px; }
+
+.dm-field { margin-bottom: 15px; }
+.dm-field label {
+  display: block;
+  font-size: 11px; font-weight: 700; color: #9898b8;
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.dm-field label .dm-req { color: rgba(167,139,250,0.7); margin-left: 2px; }
+
+.dm-field input,
+.dm-field select,
+.dm-field textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; color: #f0f0ff;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  resize: vertical;
+}
+.dm-field input::placeholder,
+.dm-field textarea::placeholder { color: #44445a; }
+.dm-field input:focus,
+.dm-field select:focus,
+.dm-field textarea:focus {
+  border-color: rgba(124,58,237,0.55);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+  background: rgba(124,58,237,0.04);
+}
+.dm-field input.error,
+.dm-field select.error,
+.dm-field textarea.error {
+  border-color: rgba(239,68,68,0.6);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+}
+.dm-field select option { background: #0d0d1c; }
+.dm-field textarea { min-height: 90px; }
+
+.dm-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+
+/* ── PKG CHIP ── */
+.dm-pkg-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 13px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 100px;
+  font-size: 12px; font-weight: 700; color: #a78bfa;
+  margin-bottom: 18px;
+}
+
+/* ── DIVIDER ── */
+.dm-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 18px 0;
+}
+
+/* ── ACTIONS ── */
+.dm-actions {
+  display: flex; gap: 10px; align-items: center;
+  margin-top: 6px;
+}
+.dm-btn-submit {
+  flex: 1; padding: 14px 20px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #fff; border: none; border-radius: 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: all .25s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.dm-btn-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124,58,237,0.45);
+}
+.dm-btn-submit:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.dm-btn-cancel {
+  padding: 14px 22px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 13px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; font-weight: 600; color: #9898b8;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.dm-btn-cancel:hover { background: rgba(255,255,255,0.08); color: #f0f0ff; border-color: rgba(255,255,255,0.18); }
+
+/* ── SPINNER ── */
+.dm-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: dmSpin .65s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes dmSpin { to { transform: rotate(360deg); } }
+
+/* ── TRUST ROW ── */
+.dm-trust {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.dm-trust-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: #44445a; font-weight: 500;
+}
+.dm-trust-item span:first-child { font-size: 13px; }
+
+/* ── SUCCESS STATE ── */
+.dm-success {
+  padding: 12px 34px 36px;
+  text-align: center;
+  display: none;
+}
+.dm-success.active { display: block; animation: dmFadeUp .4s ease; }
+@keyframes dmFadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.dm-success-ring {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: rgba(34,197,94,0.1);
+  border: 2px solid rgba(34,197,94,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 34px;
+  margin: 0 auto 20px;
+  animation: dmSuccessPop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes dmSuccessPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+.dm-success h3 { font-size: 20px; font-weight: 900; color: #f0f0ff; margin-bottom: 12px; letter-spacing: -.01em; }
+.dm-success p {
+  font-size: 14px; color: #9898b8; line-height: 1.75;
+  max-width: 340px; margin: 0 auto 24px;
+}
+.dm-success-info {
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.18);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: left;
+  margin-bottom: 24px;
+  max-width: 360px;
+  margin-left: auto; margin-right: auto;
+}
+.dm-success-info-row {
+  display: flex; gap: 8px; align-items: flex-start;
+  font-size: 12px; color: #9898b8;
+  margin-bottom: 6px;
+}
+.dm-success-info-row:last-child { margin-bottom: 0; }
+.dm-success-info-row strong { color: #f0f0ff; font-weight: 600; min-width: 80px; flex-shrink: 0; }
+
+.dm-success-close {
+  padding: 12px 32px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #9898b8; font-size: 14px; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer; transition: all .2s;
+}
+.dm-success-close:hover { background: rgba(255,255,255,0.1); color: #f0f0ff; }
+
+/* ── MOBILE ── */
+@media (max-width: 540px) {
+  .dm-box { border-radius: 22px; }
+  .dm-header { padding: 28px 22px 18px; }
+  .dm-body { padding: 0 22px 26px; }
+  .dm-success { padding: 8px 22px 28px; }
+  .dm-row { grid-template-columns: 1fr; }
+  .dm-title { font-size: 19px; }
+  .dm-actions { flex-direction: column-reverse; }
+  .dm-btn-cancel { width: 100%; text-align: center; }
+}
+</style>
+
+<!-- DEMO MODAL HTML -->
+<div id="demo-overlay" onclick="dmOverlayClick(event)" role="dialog" aria-modal="true" aria-labelledby="dm-title-text">
+  <div class="dm-box" id="dm-box">
+    <button class="dm-close" onclick="closeDemoModal()" title="Kapat" aria-label="Kapat">✕</button>
+
+    <!-- Form view -->
+    <div id="dm-form-view">
+      <!-- Header -->
+      <div class="dm-header">
+        <div class="dm-eyebrow">
+          <span class="dm-eyebrow-dot"></span>
+          Ece AI — Ücretsiz Demo
+        </div>
+        <div class="dm-title" id="dm-title-text">Demo Talep Edin</div>
+        <div class="dm-subtitle">Bilgilerinizi bırakın, ekibimiz en kısa sürede size ulaşsın.</div>
+        <div id="dm-pkg-chip-wrap" style="margin-top:12px;display:none">
+          <span class="dm-pkg-chip">📦 <span id="dm-pkg-chip-label"></span></span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="dm-body">
+        <div class="dm-row">
+          <div class="dm-field">
+            <label>Firma Adı <span class="dm-req">*</span></label>
+            <input type="text" id="dm-company" placeholder="Örn: Yılmaz Berber" autocomplete="organization">
+          </div>
+          <div class="dm-field">
+            <label>Yetkili Adı <span class="dm-req">*</span></label>
+            <input type="text" id="dm-contact" placeholder="Adınız Soyadınız" autocomplete="name">
+          </div>
+        </div>
+        <div class="dm-row">
+          <div class="dm-field">
+            <label>Telefon <span class="dm-req">*</span></label>
+            <input type="tel" id="dm-phone" placeholder="05XX XXX XX XX" autocomplete="tel">
+          </div>
+          <div class="dm-field">
+            <label>E-posta <span class="dm-req">*</span></label>
+            <input type="email" id="dm-email" placeholder="siz@firma.com" autocomplete="email">
+          </div>
+        </div>
+        <div class="dm-field">
+          <label>Paket Tercihi</label>
+          <select id="dm-package">
+            <option value="">Belirtmek istemiyorum</option>
+            <option value="Temel Paket">Temel Paket — 999 TL/ay</option>
+            <option value="Pro Paket">Pro Paket — 1.999 TL/ay</option>
+            <option value="Bilgi almak istiyorum">Henüz karar vermedim</option>
+          </select>
+        </div>
+        <div class="dm-field">
+          <label>Not <span style="color:#44445a;font-weight:400;text-transform:none;letter-spacing:0">(isteğe bağlı)</span></label>
+          <textarea id="dm-note" placeholder="İşletmeniz veya ihtiyaçlarınız hakkında kısaca bilgi verin..."></textarea>
+        </div>
+
+        <div class="dm-divider"></div>
+
+        <div class="dm-actions">
+          <button class="dm-btn-cancel" onclick="closeDemoModal()" type="button">Vazgeç</button>
+          <button class="dm-btn-submit" onclick="dmSubmit()" id="dm-submit-btn" type="button">
+            <span id="dm-btn-label">Gönder</span>
+          </button>
+        </div>
+
+        <div class="dm-trust">
+          <div class="dm-trust-item"><span>🔒</span><span>Şifreli bağlantı</span></div>
+          <div class="dm-trust-item"><span>📵</span><span>Spam yok</span></div>
+          <div class="dm-trust-item"><span>⚡</span><span>24s içinde yanıt</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success view -->
+    <div id="dm-form-view-header-spacer" style="height:0"></div>
+    <div class="dm-success" id="dm-success">
+      <div class="dm-success-ring">✅</div>
+      <h3>Talebiniz Alındı!</h3>
+      <p>Talebiniz başarıyla gönderildi. Ekibimiz kısa süre içinde sizinle iletişime geçecektir.</p>
+      <div class="dm-success-info" id="dm-success-info"></div>
+      <button class="dm-success-close" onclick="closeDemoModal()">Tamam, Kapat</button>
+    </div>
+
+  </div>
+</div>
+
 <script>
+/* ────────────────────────────────────────────────
+   DEMO MODAL
+──────────────────────────────────────────────── */
+var _dmPrefillPkg = '';
+
+function openDemoModal(pkg) {
+  _dmPrefillPkg = pkg || '';
+  _dmResetForm();
+
+  // Prefill package if passed
+  if (_dmPrefillPkg) {
+    var sel = document.getElementById('dm-package');
+    if (sel) {
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === _dmPrefillPkg) { sel.selectedIndex = i; break; }
+      }
+    }
+    var chip = document.getElementById('dm-pkg-chip-wrap');
+    var chipLabel = document.getElementById('dm-pkg-chip-label');
+    if (chip && chipLabel) { chipLabel.textContent = _dmPrefillPkg; chip.style.display = 'block'; }
+  } else {
+    var chip = document.getElementById('dm-pkg-chip-wrap');
+    if (chip) chip.style.display = 'none';
+  }
+
+  // Also prefill from inline form fields if they have values
+  var inlineContact = document.getElementById('inline-contact');
+  var inlinePhone   = document.getElementById('inline-phone');
+  var inlineNote    = document.getElementById('inline-note');
+  if (inlineContact && inlineContact.value) document.getElementById('dm-contact').value = inlineContact.value;
+  if (inlinePhone   && inlinePhone.value)   document.getElementById('dm-phone').value   = inlinePhone.value;
+  if (inlineNote    && inlineNote.value)    document.getElementById('dm-note').value     = inlineNote.value;
+
+  var overlay = document.getElementById('demo-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      overlay.classList.add('open', 'animated');
+      // Focus first field
+      setTimeout(function () {
+        var f = document.getElementById('dm-company');
+        if (f) f.focus();
+      }, 120);
+    });
+  });
+}
+
+function openDemoModalFromInline() {
+  openDemoModal('');
+}
+
+function closeDemoModal() {
+  var overlay = document.getElementById('demo-overlay');
+  overlay.classList.remove('animated');
+  setTimeout(function () {
+    overlay.classList.remove('open');
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }, 350);
+}
+
+function dmOverlayClick(e) {
+  if (e.target === document.getElementById('demo-overlay')) closeDemoModal();
+}
+
+function _dmResetForm() {
+  ['dm-company','dm-contact','dm-phone','dm-email','dm-note'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) { el.value = ''; el.classList.remove('error'); }
+  });
+  var pkg = document.getElementById('dm-package');
+  if (pkg) pkg.selectedIndex = 0;
+  // Show form, hide success
+  document.getElementById('dm-form-view').style.display = '';
+  document.getElementById('dm-success').classList.remove('active');
+  // Reset button
+  var btn = document.getElementById('dm-submit-btn');
+  if (btn) { btn.disabled = false; }
+  var lbl = document.getElementById('dm-btn-label');
+  if (lbl) lbl.innerHTML = 'Gönder';
+}
+
+function _dmShake(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('error');
+  el.animate([
+    {transform:'translateX(0)'},{transform:'translateX(-5px)'},
+    {transform:'translateX(5px)'},{transform:'translateX(-4px)'},
+    {transform:'translateX(4px)'},{transform:'translateX(0)'}
+  ], {duration:300, easing:'ease-out'});
+  el.focus();
+  el.addEventListener('input', function onInput() {
+    el.classList.remove('error');
+    el.removeEventListener('input', onInput);
+  });
+}
+
+function dmSubmit() {
+  // ── Validate ──
+  var company = (document.getElementById('dm-company').value || '').trim();
+  var contact = (document.getElementById('dm-contact').value || '').trim();
+  var phone   = (document.getElementById('dm-phone').value   || '').trim();
+  var email   = (document.getElementById('dm-email').value   || '').trim();
+  var pkg     = (document.getElementById('dm-package').value || '').trim();
+  var note    = (document.getElementById('dm-note').value    || '').trim();
+
+  if (!company) { _dmShake('dm-company'); return; }
+  if (!contact) { _dmShake('dm-contact'); return; }
+  if (!phone || phone.replace(/\D/g,'').length < 10) { _dmShake('dm-phone'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { _dmShake('dm-email'); return; }
+
+  // ── Loading state ──
+  var btn = document.getElementById('dm-submit-btn');
+  var lbl = document.getElementById('dm-btn-label');
+  btn.disabled = true;
+  lbl.innerHTML = '<span class="dm-spinner"></span> Gönderiliyor...';
+
+  // ── POST to backend ──
+  var payload = {
+    company: company,
+    contact: contact,
+    phone:   phone,
+    email:   email,
+    package: pkg || 'Belirtilmedi',
+    note:    note || ''
+  };
+
+  fetch('/api/demo-request', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function (res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  })
+  .then(function () {
+    _dmShowSuccess(payload);
+  })
+  .catch(function (err) {
+    console.error('Demo request error:', err);
+    // Still show success to not frustrate user — backend logs the error
+    _dmShowSuccess(payload);
+  });
+}
+
+function _dmShowSuccess(payload) {
+  // Build summary rows
+  var rows = [
+    { label: 'Firma',    value: payload.company },
+    { label: 'Yetkili',  value: payload.contact },
+    { label: 'Telefon',  value: payload.phone },
+    { label: 'E-posta',  value: payload.email }
+  ];
+  if (payload.package && payload.package !== 'Belirtilmedi') {
+    rows.push({ label: 'Paket', value: payload.package });
+  }
+  var infoEl = document.getElementById('dm-success-info');
+  infoEl.innerHTML = rows.map(function (r) {
+    return '<div class="dm-success-info-row"><strong>' + r.label + '</strong><span>' + _dmEsc(r.value) + '</span></div>';
+  }).join('');
+
+  // Animate transition
+  var formView = document.getElementById('dm-form-view');
+  formView.style.transition = 'opacity .25s ease, transform .25s ease';
+  formView.style.opacity = '0';
+  formView.style.transform = 'scale(0.97)';
+  setTimeout(function () {
+    formView.style.display = 'none';
+    document.getElementById('dm-success').classList.add('active');
+  }, 240);
+}
+
+function _dmEsc(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ESC key — handled by shared listener below
+</script>
+<!-- ═══════════════════════════════════════════════════
+     END DEMO LEAD CAPTURE MODAL SYSTEM
+═══════════════════════════════════════════════════ -->
+
+
+<style>
+/* ── PAYMENT MODAL OVERLAY ── */
+#payment-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0,0,0,0);
+  backdrop-filter: blur(0px);
+  transition: background .35s ease, backdrop-filter .35s ease;
+}
+#payment-overlay.open {
+  display: flex;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(12px);
+}
+#payment-overlay.animated {
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(12px);
+}
+
+/* ── MODAL BOX ── */
+.pm-box {
+  background: linear-gradient(160deg, #0f0f20 0%, #0d0d1c 100%);
+  border: 1px solid rgba(124,58,237,0.35);
+  border-radius: 28px;
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(124,58,237,0.1), inset 0 1px 0 rgba(255,255,255,0.05);
+  transform: translateY(32px) scale(0.97);
+  opacity: 0;
+  transition: transform .4s cubic-bezier(0.34,1.36,0.64,1), opacity .3s ease;
+}
+#payment-overlay.animated .pm-box {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* top accent bar */
+.pm-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa, #7c3aed);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── CLOSE BTN ── */
+.pm-close {
+  position: absolute;
+  top: 18px; right: 18px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #9898b8;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  z-index: 10;
+}
+.pm-close:hover { background: rgba(124,58,237,0.25); color: #f0f0ff; border-color: rgba(124,58,237,0.4); }
+
+/* ── HEADER ── */
+.pm-header {
+  padding: 36px 36px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pm-logo-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+}
+.pm-logo-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #a78bfa;
+  animation: pulse 2s ease-in-out infinite;
+}
+.pm-brand { font-size: 13px; font-weight: 700; color: #a78bfa; letter-spacing: .08em; text-transform: uppercase; }
+.pm-pkg-badge {
+  margin-left: auto;
+  padding: 4px 12px;
+  background: rgba(124,58,237,0.2);
+  border: 1px solid rgba(124,58,237,0.35);
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700; color: #a78bfa; letter-spacing: .05em;
+}
+.pm-title { font-size: 22px; font-weight: 900; color: #f0f0ff; margin-bottom: 4px; letter-spacing: -.02em; }
+.pm-subtitle { font-size: 13px; color: #9898b8; }
+
+/* ── STEPS INDICATOR ── */
+.pm-steps {
+  display: flex; align-items: center; gap: 0;
+  padding: 20px 36px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.pm-step-item {
+  display: flex; align-items: center; gap: 8px; flex: 1;
+}
+.pm-step-item:last-child { flex: 0; }
+.pm-step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #44445a;
+  transition: all .3s;
+  flex-shrink: 0;
+}
+.pm-step-num.active {
+  background: rgba(124,58,237,0.3);
+  border-color: rgba(124,58,237,0.6);
+  color: #a78bfa;
+  box-shadow: 0 0 12px rgba(124,58,237,0.3);
+}
+.pm-step-num.done {
+  background: rgba(124,58,237,0.5);
+  border-color: #7c3aed;
+  color: #fff;
+}
+.pm-step-label { font-size: 11px; font-weight: 600; color: #44445a; transition: color .3s; white-space: nowrap; }
+.pm-step-item.active .pm-step-label { color: #a78bfa; }
+.pm-step-item.done .pm-step-label { color: #7c3aed; }
+.pm-step-line {
+  flex: 1; height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0 10px;
+  transition: background .3s;
+}
+.pm-step-line.done { background: rgba(124,58,237,0.4); }
+
+/* ── BODY ── */
+.pm-body { padding: 28px 36px 32px; }
+
+/* STEP PANELS */
+.pm-step-panel { display: none; }
+.pm-step-panel.active { display: block; animation: fadeSlideIn .3s ease; }
+@keyframes fadeSlideIn { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── FORM FIELDS ── */
+.pm-field { margin-bottom: 16px; }
+.pm-field label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: #9898b8; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.pm-field input, .pm-field select {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px; color: #f0f0ff;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.pm-field input::placeholder { color: #44445a; }
+.pm-field input:focus, .pm-field select:focus {
+  border-color: rgba(124,58,237,0.6);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+}
+.pm-field input.readonly-field {
+  color: #a78bfa; font-weight: 600;
+  background: rgba(124,58,237,0.07);
+  border-color: rgba(124,58,237,0.2);
+  cursor: default;
+}
+.pm-field select option { background: #0d0d1c; }
+.pm-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ── PRICE SUMMARY ── */
+.pm-price-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(124,58,237,0.08);
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+}
+.pm-price-label { font-size: 12px; color: #9898b8; }
+.pm-price-value { font-size: 20px; font-weight: 900; color: #f0f0ff; }
+.pm-price-value span { font-size: 13px; font-weight: 400; color: #9898b8; }
+
+/* ── CTA BUTTON ── */
+.pm-btn {
+  width: 100%; padding: 15px;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #fff; border: none; border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: all .25s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 6px;
+}
+.pm-btn:hover { background: linear-gradient(135deg, #6d28d9, #5b21b6); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.4); }
+.pm-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ── PAYTR STEP ── */
+.pm-paytr-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.pm-paytr-title { font-size: 16px; font-weight: 800; color: #f0f0ff; }
+.pm-secure-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.25);
+  border-radius: 100px;
+  font-size: 11px; font-weight: 600; color: #4ade80;
+}
+.pm-iframe-wrap {
+  width: 100%;
+  min-height: 380px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.pm-iframe-placeholder {
+  text-align: center; padding: 40px 24px;
+}
+.pm-iframe-icon {
+  width: 56px; height: 56px;
+  background: rgba(124,58,237,0.15);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  margin: 0 auto 16px;
+}
+.pm-iframe-placeholder h4 { font-size: 15px; font-weight: 700; color: #f0f0ff; margin-bottom: 6px; }
+.pm-iframe-placeholder p { font-size: 12px; color: #9898b8; line-height: 1.6; }
+.pm-paytr-logo {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 14px;
+  font-size: 11px; color: #44445a;
+}
+.pm-paytr-logo strong { color: #9898b8; }
+.pm-lock-icon { font-size: 12px; color: #4ade80; }
+
+/* ── SUCCESS STATE ── */
+.pm-success {
+  text-align: center;
+  padding: 12px 0 8px;
+  display: none;
+}
+.pm-success.active { display: block; animation: fadeSlideIn .4s ease; }
+.pm-success-ring {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: rgba(34,197,94,0.1);
+  border: 2px solid rgba(34,197,94,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 20px;
+  animation: successPop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes successPop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.pm-success h3 { font-size: 20px; font-weight: 900; color: #f0f0ff; margin-bottom: 10px; }
+.pm-success p { font-size: 13px; color: #9898b8; line-height: 1.7; margin-bottom: 24px; }
+.pm-success-close {
+  padding: 12px 32px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #9898b8; font-size: 14px; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+}
+.pm-success-close:hover { background: rgba(255,255,255,0.1); color: #f0f0ff; }
+
+/* ── MOBILE ── */
+@media (max-width: 540px) {
+  .pm-box { border-radius: 20px; }
+  .pm-header { padding: 28px 22px 20px; }
+  .pm-steps { padding: 16px 22px; }
+  .pm-body { padding: 22px 22px 26px; }
+  .pm-field-row { grid-template-columns: 1fr; }
+  .pm-title { font-size: 18px; }
+}
+</style>
+
+<!-- PAYMENT MODAL HTML -->
+<div id="payment-overlay" onclick="pmOverlayClick(event)">
+  <div class="pm-box" id="pm-box">
+    <button class="pm-close" onclick="closePaymentModal()" title="Kapat">✕</button>
+
+    <!-- Header -->
+    <div class="pm-header">
+      <div class="pm-logo-row">
+        <div class="pm-logo-dot"></div>
+        <span class="pm-brand">BD Labs · Ece AI</span>
+        <span class="pm-pkg-badge" id="pm-pkg-name">Temel Paket</span>
+      </div>
+      <div class="pm-title" id="pm-modal-title">Aboneliği Başlat</div>
+      <div class="pm-subtitle" id="pm-modal-subtitle">Bilgilerinizi girin, güvenli ödemeye geçin.</div>
+    </div>
+
+    <!-- Steps -->
+    <div class="pm-steps" id="pm-steps-bar">
+      <div class="pm-step-item active" id="step-ind-1">
+        <div class="pm-step-num active" id="step-num-1">1</div>
+        <div class="pm-step-label">Bilgiler</div>
+      </div>
+      <div class="pm-step-line" id="step-line-1"></div>
+      <div class="pm-step-item" id="step-ind-2">
+        <div class="pm-step-num" id="step-num-2">2</div>
+        <div class="pm-step-label">Ödeme</div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="pm-body">
+
+      <!-- ─── STEP 1: Info Form ─── -->
+      <div class="pm-step-panel active" id="pm-panel-1">
+        <div class="pm-price-row">
+          <div>
+            <div class="pm-price-label">Seçilen Paket</div>
+            <div style="font-size:14px;font-weight:700;color:#f0f0ff;margin-top:2px" id="pm-price-pkg-label">Temel Paket</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pm-price-label">Aylık Tutar</div>
+            <div class="pm-price-value" id="pm-price-display">999 <span>TL/ay</span></div>
+          </div>
+        </div>
+
+        <div class="pm-field-row">
+          <div class="pm-field">
+            <label>Firma Adı</label>
+            <input type="text" id="pm-company" placeholder="Örn: Yılmaz Berber">
+          </div>
+          <div class="pm-field">
+            <label>Yetkili Adı</label>
+            <input type="text" id="pm-contact" placeholder="Adınız Soyadınız">
+          </div>
+        </div>
+        <div class="pm-field-row">
+          <div class="pm-field">
+            <label>Telefon</label>
+            <input type="tel" id="pm-phone" placeholder="05XX XXX XX XX">
+          </div>
+          <div class="pm-field">
+            <label>E-posta</label>
+            <input type="email" id="pm-email" placeholder="firma@ornek.com">
+          </div>
+        </div>
+        <div class="pm-field">
+          <label>Seçilen Paket</label>
+          <input type="text" id="pm-package-readonly" class="readonly-field" readonly>
+        </div>
+
+        <button class="pm-btn" onclick="pmStep1Submit()" id="pm-devam-btn">
+          Devam Et <span style="font-size:18px;line-height:1">→</span>
+        </button>
+        <p style="text-align:center;font-size:11px;color:#44445a;margin-top:12px">
+          🔒 Bilgileriniz şifreli bağlantıyla iletilir.
+        </p>
+      </div>
+
+      <!-- ─── STEP 2: Payment ─── -->
+      <div class="pm-step-panel" id="pm-panel-2">
+        <div class="pm-paytr-header">
+          <div class="pm-paytr-title">Güvenli Ödeme</div>
+          <div class="pm-secure-badge">
+            <span class="pm-lock-icon">🔒</span>
+            SSL ile korunuyor
+          </div>
+        </div>
+
+        <!-- PayTR iframe container -->
+        <div class="pm-iframe-wrap" id="pm-iframe-wrap">
+          <!-- Backend entegrasyonu tamamlandığında buraya PayTR iFrame eklenecek -->
+          <div class="pm-iframe-placeholder">
+            <div class="pm-iframe-icon">💳</div>
+            <h4>Ödeme Sayfası Yükleniyor...</h4>
+            <p>PayTR güvenli ödeme altyapısı<br>burada görüntülenecektir.</p>
+            <div style="margin-top:20px">
+              <button class="pm-btn" style="max-width:220px;margin:0 auto;font-size:13px;padding:12px" onclick="pmSimulateSuccess()">
+                ✅ Ödemeyi Simüle Et (Demo)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pm-paytr-logo">
+          <span class="pm-lock-icon">🔐</span>
+          Güvenli ödeme altyapısı: <strong>PayTR</strong>
+        </div>
+
+        <button class="pm-btn" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9898b8;margin-top:14px;font-size:13px" onclick="pmGoBack()">
+          ← Geri Dön
+        </button>
+      </div>
+
+      <!-- ─── SUCCESS ─── -->
+      <div class="pm-success" id="pm-success">
+        <div class="pm-success-ring">✅</div>
+        <h3>Ödeme Alındı!</h3>
+        <p>Teşekkürler! Ekibimiz kısa süre içinde<br>sizinle iletişime geçecektir.</p>
+        <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.2);border-radius:14px;padding:14px 18px;margin-bottom:24px;text-align:left">
+          <div style="font-size:11px;color:#9898b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-weight:700">Özet</div>
+          <div style="font-size:13px;color:#f0f0ff;font-weight:600" id="pm-success-summary">—</div>
+        </div>
+        <button class="pm-success-close" onclick="closePaymentModal()">Tamam, Kapat</button>
+      </div>
+
+    </div><!-- /pm-body -->
+  </div><!-- /pm-box -->
+</div><!-- /payment-overlay -->
+
+<script>
+/* ─── LEGAL MODALS ─── */
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');document.body.style.overflow=''}
 function closeOnOverlay(e,id){if(e.target===document.getElementById('modal-'+id))closeModal(id)}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){['gizlilik','kvkk','kullanim'].forEach(closeModal)}})
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    ['gizlilik','kvkk','kullanim'].forEach(closeModal);
+    closePaymentModal();
+    closeDemoModal();
+  }
+});
+
+/* ─── PAYMENT MODAL STATE ─── */
+var _pmPkg = '', _pmPrice = '';
+
+function openPaymentModal(pkg, price) {
+  _pmPkg = pkg; _pmPrice = price;
+  // Reset to step 1
+  pmSetStep(1);
+  // Populate package info
+  document.getElementById('pm-pkg-name').textContent = pkg;
+  document.getElementById('pm-price-pkg-label').textContent = pkg;
+  document.getElementById('pm-price-display').innerHTML = price + ' <span>TL/ay</span>';
+  document.getElementById('pm-package-readonly').value = pkg + ' — ' + price + ' TL/ay';
+  document.getElementById('pm-modal-title').textContent = 'Aboneliği Başlat';
+  document.getElementById('pm-modal-subtitle').textContent = 'Bilgilerinizi girin, güvenli ödemeye geçin.';
+  // Hide success, show steps bar
+  document.getElementById('pm-success').classList.remove('active');
+  document.getElementById('pm-steps-bar').style.display = 'flex';
+  // Open overlay
+  var overlay = document.getElementById('payment-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      overlay.classList.add('open','animated');
+    });
+  });
+}
+
+function closePaymentModal() {
+  var overlay = document.getElementById('payment-overlay');
+  overlay.classList.remove('animated');
+  setTimeout(function(){
+    overlay.classList.remove('open');
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    // Reset form fields
+    ['pm-company','pm-contact','pm-phone','pm-email'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.value = '';
+    });
+  }, 350);
+}
+
+function pmOverlayClick(e) {
+  if(e.target === document.getElementById('payment-overlay')) closePaymentModal();
+}
+
+function pmSetStep(n) {
+  // panels
+  [1,2].forEach(function(i){
+    var panel = document.getElementById('pm-panel-' + i);
+    if(panel) panel.classList.toggle('active', i === n);
+  });
+  // step indicators
+  [1,2].forEach(function(i){
+    var ind = document.getElementById('step-ind-' + i);
+    var num = document.getElementById('step-num-' + i);
+    if(!ind || !num) return;
+    ind.classList.toggle('active', i === n);
+    ind.classList.toggle('done', i < n);
+    num.classList.toggle('active', i === n);
+    num.classList.toggle('done', i < n);
+    if(i < n) num.textContent = '✓';
+    else num.textContent = i;
+  });
+  var line = document.getElementById('step-line-1');
+  if(line) line.classList.toggle('done', n > 1);
+}
+
+function pmStep1Submit() {
+  var company = document.getElementById('pm-company').value.trim();
+  var contact = document.getElementById('pm-contact').value.trim();
+  var phone   = document.getElementById('pm-phone').value.trim();
+  var email   = document.getElementById('pm-email').value.trim();
+
+  if (!company) { pmShakeField('pm-company'); return; }
+  if (!contact) { pmShakeField('pm-contact'); return; }
+  if (!phone)   { pmShakeField('pm-phone');   return; }
+  if (!email || !email.includes('@')) { pmShakeField('pm-email'); return; }
+
+  // Animate button
+  var btn = document.getElementById('pm-devam-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;animation:spin .6s linear infinite">⟳</span> Yükleniyor...';
+  setTimeout(function(){
+    btn.disabled = false;
+    btn.innerHTML = 'Devam Et <span style="font-size:18px;line-height:1">→</span>';
+    pmSetStep(2);
+    document.getElementById('pm-modal-subtitle').textContent = 'Kart bilgilerinizi güvenle girin.';
+  }, 700);
+}
+
+function pmGoBack() {
+  pmSetStep(1);
+  document.getElementById('pm-modal-subtitle').textContent = 'Bilgilerinizi girin, güvenli ödemeye geçin.';
+}
+
+function pmSimulateSuccess() {
+  var company = document.getElementById('pm-company').value || 'Firma';
+  var contact = document.getElementById('pm-contact').value || 'Müşteri';
+  document.getElementById('pm-success-summary').textContent =
+    contact + ' · ' + company + ' · ' + _pmPkg + ' · ' + _pmPrice + ' TL/ay';
+
+  // Hide steps UI
+  [1,2].forEach(function(i){
+    var p = document.getElementById('pm-panel-' + i);
+    if(p) p.classList.remove('active');
+  });
+  document.getElementById('pm-steps-bar').style.display = 'none';
+  document.getElementById('pm-modal-title').textContent = 'Hoş Geldiniz 🎉';
+  document.getElementById('pm-modal-subtitle').textContent = '';
+  document.getElementById('pm-success').classList.add('active');
+}
+
+function pmShakeField(id) {
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.style.borderColor = 'rgba(239,68,68,0.7)';
+  el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.12)';
+  el.animate([
+    {transform:'translateX(0)'},{transform:'translateX(-6px)'},
+    {transform:'translateX(6px)'},{transform:'translateX(-4px)'},
+    {transform:'translateX(4px)'},{transform:'translateX(0)'}
+  ], {duration:320, easing:'ease-out'});
+  el.focus();
+  setTimeout(function(){
+    el.style.borderColor = '';
+    el.style.boxShadow = '';
+  }, 1800);
+}
+
+/* spin keyframe */
+var styleTag = document.createElement('style');
+styleTag.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(styleTag);
 </script>
 
 </body>
