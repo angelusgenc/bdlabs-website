@@ -1259,7 +1259,7 @@ function _dmEsc(str) {
 .pm-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 560px;
+  min-height: 600px;
 }
 
 /* LEFT — form */
@@ -1353,7 +1353,7 @@ function _dmEsc(str) {
   flex-direction: column;
   background: rgba(0,0,0,0.2);
   border-radius: 0 24px 24px 0;
-  overflow: hidden;
+  overflow: auto;
 }
 .pm-right-header {
   padding: 20px 24px 16px;
@@ -1375,18 +1375,19 @@ function _dmEsc(str) {
 .pm-iframe-area {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: stretch;
   padding: 0;
-  min-height: 480px;
+  min-height: 560px;
   position: relative;
 }
 .pm-iframe-area iframe {
   width: 100%;
-  height: 100%;
-  min-height: 480px;
+  height: 560px;
+  min-height: 560px;
   border: none;
   display: block;
+  flex: 1;
 }
 
 /* placeholder (before token) */
@@ -1694,9 +1695,10 @@ function pmSubmit() {
 
     // Load iframe
     var area = document.getElementById('pm-iframe-area');
+    area.style.minHeight = '560px';
     area.innerHTML = '<iframe src="https://www.paytr.com/odeme/guvenli/' + data.token + '" '
-      + 'id="paytriframe" frameborder="0" scrolling="no" '
-      + 'style="width:100%;height:100%;min-height:480px;border:none;display:block;">'
+      + 'id="paytriframe" frameborder="0" '
+      + 'style="width:100%;height:560px;min-height:560px;border:none;display:block;">'
       + '</iframe>';
 
     // Listen for PayTR result
@@ -1712,9 +1714,11 @@ function pmSubmit() {
           pmShowFailed();
         }
         if(msg.iframeHeight){
+          var h = parseInt(msg.iframeHeight) + 20;
           var iframe = document.getElementById('paytriframe');
-          if(iframe){ iframe.style.height = msg.iframeHeight + 'px'; iframe.style.minHeight = msg.iframeHeight + 'px'; }
-          area.style.minHeight = msg.iframeHeight + 'px';
+          if(iframe){ iframe.style.height = h + 'px'; iframe.style.minHeight = h + 'px'; }
+          var area = document.getElementById('pm-iframe-area');
+          if(area){ area.style.minHeight = h + 'px'; }
         }
       } catch(err){}
     });
