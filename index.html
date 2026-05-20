@@ -1075,8 +1075,13 @@ function _dmResetForm() {
   });
   var pkg = document.getElementById('dm-package');
   if (pkg) pkg.selectedIndex = 0;
-  // Show form, hide success
-  document.getElementById('dm-form-view').style.display = '';
+  // Show form — clear inline styles left by _dmShowSuccess animation
+  var formView = document.getElementById('dm-form-view');
+  formView.style.display = '';
+  formView.style.opacity = '';
+  formView.style.transform = '';
+  formView.style.transition = '';
+  // Hide success
   document.getElementById('dm-success').classList.remove('active');
   // Reset button
   var btn = document.getElementById('dm-submit-btn');
@@ -1131,7 +1136,7 @@ function dmSubmit() {
     note:    note || ''
   };
 
-  fetch('/api/demo-request', {
+  fetch('https://eceaiappointment-production.up.railway.app/api/demo-request', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
