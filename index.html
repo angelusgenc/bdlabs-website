@@ -1027,14 +1027,6 @@ function openDemoModal(pkg) {
     if (chip) chip.style.display = 'none';
   }
 
-  // Also prefill from inline form fields if they have values
-  var inlineContact = document.getElementById('inline-contact');
-  var inlinePhone   = document.getElementById('inline-phone');
-  var inlineNote    = document.getElementById('inline-note');
-  if (inlineContact && inlineContact.value) document.getElementById('dm-contact').value = inlineContact.value;
-  if (inlinePhone   && inlinePhone.value)   document.getElementById('dm-phone').value   = inlinePhone.value;
-  if (inlineNote    && inlineNote.value)    document.getElementById('dm-note').value     = inlineNote.value;
-
   var overlay = document.getElementById('demo-overlay');
   overlay.style.display = 'flex';
   document.body.style.overflow = 'hidden';
