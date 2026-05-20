@@ -1568,18 +1568,12 @@ function _dmEsc(str) {
           </div>
         </div>
 
-        <!-- PayTR iframe container -->
+        <!-- PayTR iframe container — token alındıktan sonra JS tarafından doldurulur -->
         <div class="pm-iframe-wrap" id="pm-iframe-wrap">
-          <!-- Backend entegrasyonu tamamlandığında buraya PayTR iFrame eklenecek -->
-          <div class="pm-iframe-placeholder">
+          <div class="pm-iframe-placeholder" id="pm-iframe-placeholder">
             <div class="pm-iframe-icon">💳</div>
-            <h4>Ödeme Sayfası Yükleniyor...</h4>
-            <p>PayTR güvenli ödeme altyapısı<br>burada görüntülenecektir.</p>
-            <div style="margin-top:20px">
-              <button class="pm-btn" style="max-width:220px;margin:0 auto;font-size:13px;padding:12px" onclick="pmSimulateSuccess()">
-                ✅ Ödemeyi Simüle Et (Demo)
-              </button>
-            </div>
+            <h4>Ödeme Sayfası Hazırlanıyor</h4>
+            <p>Lütfen bekleyin...</p>
           </div>
         </div>
 
@@ -1703,16 +1697,62 @@ function pmStep1Submit() {
   if (!phone)   { pmShakeField('pm-phone');   return; }
   if (!email || !email.includes('@')) { pmShakeField('pm-email'); return; }
 
-  // Animate button
   var btn = document.getElementById('pm-devam-btn');
   btn.disabled = true;
   btn.innerHTML = '<span style="display:inline-block;animation:spin .6s linear infinite">⟳</span> Yükleniyor...';
-  setTimeout(function(){
+
+  fetch('https://eceaiappointment-production.up.railway.app/api/paytr-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      company:  company,
+      contact:  contact,
+      phone:    phone,
+      email:    email,
+      package:  _pmPkg,
+      price:    _pmPrice
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function(data) {
     btn.disabled = false;
     btn.innerHTML = 'Devam Et <span style="font-size:18px;line-height:1">→</span>';
+
+    if (!data.token) throw new Error(data.error || 'Token alınamadı');
+
     pmSetStep(2);
     document.getElementById('pm-modal-subtitle').textContent = 'Kart bilgilerinizi güvenle girin.';
-  }, 700);
+
+    // iFrame'i gerçek PayTR URL ile yükle
+    var wrap = document.getElementById('pm-iframe-wrap');
+    wrap.innerHTML = '<iframe src="https://www.paytr.com/odeme/guvenli/' + data.token + '" '
+      + 'id="paytriframe" frameborder="0" scrolling="no" style="width:100%;min-height:430px;border:none;border-radius:12px;">'
+      + '</iframe>';
+
+    // PayTR iFrame yüksekliğini otomatik ayarla
+    window.addEventListener('message', function pmMsg(e) {
+      if (e.origin !== 'https://www.paytr.com') return;
+      try {
+        var msg = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        if (msg.status === 'success') {
+          window.removeEventListener('message', pmMsg);
+          pmShowPaymentSuccess();
+        } else if (msg.status === 'failed') {
+          window.removeEventListener('message', pmMsg);
+          pmShowPaymentFailed();
+        }
+        if (msg.iframeHeight) {
+          var iframe = document.getElementById('paytriframe');
+          if (iframe) iframe.style.minHeight = msg.iframeHeight + 'px';
+        }
+      } catch(err) {}
+    });
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = 'Devam Et <span style="font-size:18px;line-height:1">→</span>';
+    alert('Ödeme başlatılamadı: ' + err.message);
+  });
 }
 
 function pmGoBack() {
@@ -1720,13 +1760,11 @@ function pmGoBack() {
   document.getElementById('pm-modal-subtitle').textContent = 'Bilgilerinizi girin, güvenli ödemeye geçin.';
 }
 
-function pmSimulateSuccess() {
+function pmShowPaymentSuccess() {
   var company = document.getElementById('pm-company').value || 'Firma';
   var contact = document.getElementById('pm-contact').value || 'Müşteri';
   document.getElementById('pm-success-summary').textContent =
     contact + ' · ' + company + ' · ' + _pmPkg + ' · ' + _pmPrice + ' TL/ay';
-
-  // Hide steps UI
   [1,2].forEach(function(i){
     var p = document.getElementById('pm-panel-' + i);
     if(p) p.classList.remove('active');
@@ -1735,6 +1773,16 @@ function pmSimulateSuccess() {
   document.getElementById('pm-modal-title').textContent = 'Hoş Geldiniz 🎉';
   document.getElementById('pm-modal-subtitle').textContent = '';
   document.getElementById('pm-success').classList.add('active');
+}
+
+function pmShowPaymentFailed() {
+  var wrap = document.getElementById('pm-iframe-wrap');
+  wrap.innerHTML = '<div class="pm-iframe-placeholder">'
+    + '<div class="pm-iframe-icon">❌</div>'
+    + '<h4 style="color:#f87171">Ödeme Başarısız</h4>'
+    + '<p>Kart bilgilerinizi kontrol edip tekrar deneyin.</p>'
+    + '<button class="pm-btn" style="max-width:200px;margin:16px auto 0;font-size:13px;padding:12px" onclick="pmGoBack()">'
+    + '← Geri Dön</button></div>';
 }
 
 function pmShakeField(id) {
