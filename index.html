@@ -452,32 +452,46 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
         </div>
         <div class="contact-item">
           <div class="contact-icon">🕐</div>
-          <div><div class="contact-label">Çalışma Saatleri</div><div class="contact-value">Pzt–Cmt 09:00–18:00</div></div>
+          <div><div class="contact-label">Çalışma Saatleri</div><div class="contact-value">Pzt–Cm 09:00–18:00</div></div>
         </div>
       </div>
       <div class="contact-form">
         <h3 style="font-size:20px;font-weight:800;margin-bottom:6px">Demo Talep Et</h3>
         <p style="font-size:13px;color:var(--txt2);margin-bottom:24px">Bilgilerinizi bırakın, sizi arayalım.</p>
-        <div class="form-row">
-          <div class="form-group"><label>Adınız</label><input type="text" id="inline-contact" placeholder="Volkan Yılmaz"></div>
-          <div class="form-group"><label>Telefon</label><input type="tel" id="inline-phone" placeholder="0532 000 00 00"></div>
+
+        <div id="inline-form-body">
+          <div class="form-row">
+            <div class="form-group"><label>Adınız</label><input type="text" id="inline-contact" placeholder="Volkan Yılmaz"></div>
+            <div class="form-group"><label>Telefon</label><input type="tel" id="inline-phone" placeholder="0532 000 00 00"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Firma Adı</label><input type="text" id="inline-company" placeholder="Yılmaz Berber"></div>
+            <div class="form-group"><label>E-posta</label><input type="email" id="inline-email" placeholder="siz@firma.com"></div>
+          </div>
+          <div class="form-group">
+            <label>Sektör</label>
+            <select id="inline-sector">
+              <option value="" disabled selected>Seçiniz...</option>
+              <option>Berber / Kuaför</option>
+              <option>Güzellik Salonu</option>
+              <option>Diş Kliniği</option>
+              <option>Klinik & Doktor</option>
+              <option>Veteriner</option>
+              <option>Oto Servis</option>
+              <option>Emlakçı</option>
+              <option>Diğer</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Mesaj</label><textarea id="inline-note" placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
+          <button class="form-submit" id="inline-submit-btn" onclick="inlineFormSubmit()">Demo Talep Et →</button>
+          <p id="inline-form-error" style="display:none;color:#f87171;font-size:13px;margin-top:10px;text-align:center"></p>
         </div>
-        <div class="form-group">
-          <label>Sektör</label>
-          <select id="inline-sector">
-            <option value="" disabled selected>Seçiniz...</option>
-            <option>Berber / Kuaför</option>
-            <option>Güzellik Salonu</option>
-            <option>Diş Kliniği</option>
-            <option>Klinik & Doktor</option>
-            <option>Veteriner</option>
-            <option>Oto Servis</option>
-            <option>Emlakçı</option>
-            <option>Diğer</option>
-          </select>
+
+        <div id="inline-form-success" style="display:none;text-align:center;padding:24px 0">
+          <div style="font-size:40px;margin-bottom:12px">✅</div>
+          <h4 style="font-size:16px;font-weight:800;color:var(--txt);margin-bottom:8px">Talebiniz Alındı!</h4>
+          <p style="font-size:13px;color:var(--txt2);line-height:1.7">Ekibimiz kısa süre içinde<br>sizinle iletişime geçecektir.</p>
         </div>
-        <div class="form-group"><label>Mesaj</label><textarea id="inline-note" placeholder="İşletmeniz hakkında kısaca bilgi verin..."></textarea></div>
-        <button class="form-submit" onclick="openDemoModalFromInline()">Demo Talep Et →</button>
       </div>
     </div>
   </div>
@@ -1042,8 +1056,49 @@ function openDemoModal(pkg) {
   });
 }
 
-function openDemoModalFromInline() {
-  openDemoModal('');
+function openDemoModalFromInline() { openDemoModal(''); }
+
+function inlineFormSubmit() {
+  var contact = (document.getElementById('inline-contact').value || '').trim();
+  var phone   = (document.getElementById('inline-phone').value   || '').trim();
+  var company = (document.getElementById('inline-company').value || '').trim();
+  var email   = (document.getElementById('inline-email').value   || '').trim();
+  var sector  = (document.getElementById('inline-sector').value  || '').trim();
+  var note    = (document.getElementById('inline-note').value    || '').trim();
+  var errEl   = document.getElementById('inline-form-error');
+
+  errEl.style.display = 'none';
+
+  if (!contact) { errEl.textContent = 'Adınızı girin.'; errEl.style.display = 'block'; document.getElementById('inline-contact').focus(); return; }
+  if (!phone || phone.replace(/\D/g,'').length < 10) { errEl.textContent = 'Geçerli bir telefon numarası girin.'; errEl.style.display = 'block'; document.getElementById('inline-phone').focus(); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Geçerli bir e-posta adresi girin.'; errEl.style.display = 'block'; document.getElementById('inline-email').focus(); return; }
+
+  var btn = document.getElementById('inline-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
+
+  fetch('https://eceaiappointment-production.up.railway.app/api/demo-request', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      company: company || contact,
+      contact: contact,
+      phone:   phone,
+      email:   email,
+      package: sector || 'İletişim Formu',
+      note:    note,
+    })
+  })
+  .then(function(res) { return res.json(); })
+  .then(function() {
+    document.getElementById('inline-form-body').style.display = 'none';
+    document.getElementById('inline-form-success').style.display = 'block';
+  })
+  .catch(function() {
+    // Hata olsa bile success göster
+    document.getElementById('inline-form-body').style.display = 'none';
+    document.getElementById('inline-form-success').style.display = 'block';
+  });
 }
 
 function closeDemoModal() {
