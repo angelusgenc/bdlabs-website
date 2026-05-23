@@ -171,6 +171,10 @@ section{padding:100px 0}
 .price-cta:hover{background:#6d28d9;transform:translateY(-1px)}
 .price-cta.secondary{background:transparent;border:1px solid var(--bdr);color:var(--txt2)}
 .price-cta.secondary:hover{border-color:var(--bdr-p);color:var(--txt);background:rgba(124,58,237,0.05)}
+.dur-btn{padding:9px 20px;border-radius:10px;border:1px solid var(--bdr);background:transparent;color:var(--txt2);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:6px}
+.dur-btn:hover{border-color:var(--bdr-p);color:var(--txt)}
+.dur-btn.active{background:rgba(124,58,237,0.15);border-color:var(--bdr-p);color:var(--purple-light)}
+.dur-badge{background:rgba(124,58,237,0.2);color:var(--purple-light);font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;letter-spacing:.03em}
 
 /* CONTACT */
 .contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:60px}
@@ -395,15 +399,29 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
   <div class="container">
     <div style="text-align:center">
       <div class="section-badge" style="margin:0 auto 16px">Fiyatlandırma</div>
-      <h2 class="section-title">Bir resepsiyon 30.000 TL,<br>Ece <span style="color:var(--purple-light)">999 TL</span>.</h2>
+      <h2 class="section-title">Bir resepsiyon 30.000 TL,<br>Ece <span style="color:var(--purple-light)">1.999 TL</span>.</h2>
       <p class="section-sub" style="margin:0 auto">Taahhüt yok. İstediğiniz zaman iptal edebilirsiniz.</p>
     </div>
+
+    <!-- Süre seçici -->
+    <div style="display:flex;justify-content:center;gap:8px;margin:32px 0 28px;flex-wrap:wrap">
+      <button class="dur-btn active" onclick="setDuration(1)"  id="dur-1">1 Ay</button>
+      <button class="dur-btn"        onclick="setDuration(3)"  id="dur-3">3 Ay <span class="dur-badge">%17 İndirim</span></button>
+      <button class="dur-btn"        onclick="setDuration(6)"  id="dur-6">6 Ay <span class="dur-badge">%17 İndirim</span></button>
+      <button class="dur-btn"        onclick="setDuration(12)" id="dur-12">12 Ay <span class="dur-badge">%17 İndirim</span></button>
+    </div>
+
     <div class="pricing-grid">
+      <!-- Temel Paket -->
       <div class="price-card">
         <div class="price-badge">BAŞLANGIÇ</div>
         <div class="price-name">Temel Paket</div>
         <div class="price-desc">Randevu almaya hemen başlayın.</div>
-        <div><span class="price-amount">999</span><span class="price-unit"> TL/ay</span></div>
+        <div>
+          <span class="price-amount" id="temel-price">1.999</span>
+          <span class="price-unit" id="temel-unit"> TL/ay</span>
+        </div>
+        <div id="temel-total" style="font-size:12px;color:var(--txt2);margin-top:4px;min-height:18px"></div>
         <div class="price-features">
           <div class="pf"><div class="pf-check">✓</div>7/24 sesli randevu asistanı</div>
           <div class="pf"><div class="pf-check">✓</div>WhatsApp bildirimleri</div>
@@ -411,13 +429,20 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>Kurulum ve destek dahil</div>
           <div class="pf"><div class="pf-check">✓</div>Mevcut numaranızla çalışır</div>
         </div>
-        <button class="price-cta secondary" onclick="openPaymentModal('Temel Paket', '999')">Hemen Başla →</button>
+        <button class="price-cta secondary" id="temel-btn" onclick="openPaymentModal('Temel Paket - 1 Ay', '1999')">Hemen Başla →</button>
+        <button class="price-cta" style="margin-top:10px;background:rgba(124,58,237,0.1);color:var(--purple-light);border:1px solid rgba(124,58,237,0.3);font-size:13px" onclick="openPaymentModal('Kurulum Ücreti', '10000')">🔧 Kurulum Ücreti: 10.000 TL</button>
       </div>
+
+      <!-- Pro Paket -->
       <div class="price-card featured">
         <div class="price-badge">PRO</div>
         <div class="price-name">Pro Paket</div>
         <div class="price-desc">Finans modülü ile işinizi büyütün.</div>
-        <div><span class="price-amount">1999</span><span class="price-unit"> TL/ay</span></div>
+        <div>
+          <span class="price-amount" id="pro-price">3.999</span>
+          <span class="price-unit" id="pro-unit"> TL/ay</span>
+        </div>
+        <div id="pro-total" style="font-size:12px;color:var(--txt2);margin-top:4px;min-height:18px"></div>
         <div class="price-features">
           <div class="pf"><div class="pf-check">✓</div>Temel Paket'in tüm özellikleri</div>
           <div class="pf"><div class="pf-check">✓</div>Finans & ciro raporları</div>
@@ -425,7 +450,8 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <div class="pf"><div class="pf-check">✓</div>İptal & hatırlatma yönetimi</div>
           <div class="pf"><div class="pf-check">✓</div>Öncelikli destek</div>
         </div>
-        <button class="price-cta" onclick="openPaymentModal('Pro Paket', '1999')">Pro'ya Geç →</button>
+        <button class="price-cta" id="pro-btn" onclick="openPaymentModal('Pro Paket - 1 Ay', '3999')">Pro'ya Geç →</button>
+        <button class="price-cta" style="margin-top:10px;background:rgba(124,58,237,0.1);color:var(--purple-light);border:1px solid rgba(124,58,237,0.3);font-size:13px" onclick="openPaymentModal('Kurulum Ücreti', '10000')">🔧 Kurulum Ücreti: 10.000 TL</button>
       </div>
     </div>
   </div>
@@ -975,8 +1001,15 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:48px 0 28px
           <label>Paket Tercihi</label>
           <select id="dm-package">
             <option value="">Belirtmek istemiyorum</option>
-            <option value="Temel Paket">Temel Paket — 999 TL/ay</option>
-            <option value="Pro Paket">Pro Paket — 1.999 TL/ay</option>
+            <option value="Temel Paket - 1 Ay">Temel Paket — 1 Ay — 1.999 TL</option>
+            <option value="Temel Paket - 3 Ay">Temel Paket — 3 Ay — 4.999 TL</option>
+            <option value="Temel Paket - 6 Ay">Temel Paket — 6 Ay — 9.999 TL</option>
+            <option value="Temel Paket - 12 Ay">Temel Paket — 12 Ay — 19.999 TL</option>
+            <option value="Pro Paket - 1 Ay">Pro Paket — 1 Ay — 3.999 TL</option>
+            <option value="Pro Paket - 3 Ay">Pro Paket — 3 Ay — 9.999 TL</option>
+            <option value="Pro Paket - 6 Ay">Pro Paket — 6 Ay — 19.999 TL</option>
+            <option value="Pro Paket - 12 Ay">Pro Paket — 12 Ay — 39.999 TL</option>
+            <option value="Kurulum Ücreti">Kurulum Ücreti — 10.000 TL</option>
             <option value="Bilgi almak istiyorum">Henüz karar vermedim</option>
           </select>
         </div>
@@ -1630,6 +1663,40 @@ function _dmEsc(str) {
 </div>
 
 <script>
+/* ─── DURATION SELECTOR ─── */
+var _durData = {
+  temel: { 1: {price:'1.999', total:'',          pkg:'Temel Paket - 1 Ay',  amt:'1999'},
+           3: {price:'4.999', total:'Toplam 4.999 TL',  pkg:'Temel Paket - 3 Ay',  amt:'4999'},
+           6: {price:'9.999', total:'Toplam 9.999 TL',  pkg:'Temel Paket - 6 Ay',  amt:'9999'},
+          12: {price:'19.999',total:'Toplam 19.999 TL', pkg:'Temel Paket - 12 Ay', amt:'19999'} },
+  pro:   { 1: {price:'3.999', total:'',          pkg:'Pro Paket - 1 Ay',  amt:'3999'},
+           3: {price:'9.999', total:'Toplam 9.999 TL',  pkg:'Pro Paket - 3 Ay',  amt:'9999'},
+           6: {price:'19.999',total:'Toplam 19.999 TL', pkg:'Pro Paket - 6 Ay',  amt:'19999'},
+          12: {price:'39.999',total:'Toplam 39.999 TL', pkg:'Pro Paket - 12 Ay', amt:'39999'} }
+};
+
+function setDuration(months) {
+  // Buttons
+  [1,3,6,12].forEach(function(m) {
+    var btn = document.getElementById('dur-' + m);
+    if (btn) btn.classList.toggle('active', m === months);
+  });
+  // Temel
+  var t = _durData.temel[months];
+  document.getElementById('temel-price').textContent = t.price;
+  document.getElementById('temel-unit').textContent  = months === 1 ? ' TL/ay' : ' TL';
+  document.getElementById('temel-total').textContent = t.total;
+  document.getElementById('temel-btn').onclick = function(){ openPaymentModal(t.pkg, t.amt); };
+  document.getElementById('temel-btn').textContent = months === 1 ? 'Hemen Başla →' : months + ' Ay Satın Al →';
+  // Pro
+  var p = _durData.pro[months];
+  document.getElementById('pro-price').textContent = p.price;
+  document.getElementById('pro-unit').textContent  = months === 1 ? ' TL/ay' : ' TL';
+  document.getElementById('pro-total').textContent = p.total;
+  document.getElementById('pro-btn').onclick = function(){ openPaymentModal(p.pkg, p.amt); };
+  document.getElementById('pro-btn').textContent = months === 1 ? 'Pro\'ya Geç →' : months + ' Ay Satın Al →';
+}
+
 /* ─── LEGAL MODALS ─── */
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');document.body.style.overflow=''}
