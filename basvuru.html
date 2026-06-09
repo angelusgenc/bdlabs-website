@@ -118,6 +118,13 @@
   .success h2 { font-size: 22px; font-weight: 800; color: #4ade80; margin-bottom: 10px; }
   .success p { font-size: 15px; color: #9898b8; line-height: 1.6; }
 
+
+  .cv-drop {
+    background: #0d0d1c; border: 1px dashed #2a2a4a;
+    border-radius: 10px; padding: 28px; text-align: center;
+    cursor: pointer; transition: border-color .15s;
+  }
+  .cv-drop:hover { border-color: #7c3aed; }
   .error-msg { font-size: 13px; color: #f87171; margin-top: 12px; display: none; text-align: center; }
 
   @media (max-width: 480px) {
@@ -192,9 +199,13 @@
         <label class="field-label">E-posta</label>
         <input type="email" id="email" placeholder="ornek@mail.com" />
       </div>
-      <div class="field" style="margin-bottom:0">
+      <div class="field">
         <label class="field-label">İlçe / Semt</label>
         <input type="text" id="location" placeholder="Bodrum, Milas, Fethiye..." />
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label class="field-label">LinkedIn Profili (isteğe bağlı)</label>
+        <input type="text" id="linkedin" placeholder="linkedin.com/in/adınız" />
       </div>
     </div>
 
@@ -262,6 +273,23 @@
       </div>
     </div>
 
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">CV / Özgeçmiş</div>
+      <label class="field-label">PDF veya Word dosyası yükleyin (maks. 5MB)</label>
+      <div class="cv-drop" id="cv-drop" onclick="document.getElementById('cv-input').click()">
+        <input type="file" id="cv-input" accept=".pdf,.doc,.docx" style="display:none" onchange="handleCV(this)">
+        <div id="cv-placeholder">
+          <span style="font-size:28px;">📎</span>
+          <p style="margin:8px 0 4px;font-size:14px;color:#c8c8e8;">Dosya seçmek için tıklayın</p>
+          <p style="font-size:12px;color:#44445a;">PDF, DOC, DOCX</p>
+        </div>
+        <div id="cv-selected" style="display:none">
+          <span style="font-size:24px;">✅</span>
+          <p style="margin:8px 0 0;font-size:14px;color:#4ade80;" id="cv-filename"></p>
+        </div>
+      </div>
+    </div>
+
     <button class="submit-btn" id="submit-btn" onclick="submitForm()">
       <span id="btn-text">Başvuruyu Gönder →</span>
     </button>
@@ -289,11 +317,26 @@ function selectYN(btn) {
   yn[q] = v;
 }
 
+
+function handleCV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Dosya 5MB'dan büyük olamaz.');
+    input.value = '';
+    return;
+  }
+  document.getElementById('cv-placeholder').style.display = 'none';
+  document.getElementById('cv-selected').style.display = 'block';
+  document.getElementById('cv-filename').textContent = file.name;
+}
+
 async function submitForm() {
   const name     = document.getElementById('name').value.trim();
   const phone    = document.getElementById('phone').value.trim();
   const email    = document.getElementById('email').value.trim();
   const location = document.getElementById('location').value.trim();
+  const linkedin  = document.getElementById('linkedin').value.trim();
   const open1    = document.getElementById('open1').value.trim();
   const open2    = document.getElementById('open2').value.trim();
   const open3    = document.getElementById('open3').value.trim();
@@ -313,11 +356,24 @@ async function submitForm() {
   btn.disabled = true;
   btnText.textContent = 'Gönderiliyor...';
 
+  let cvBase64 = '';
+  let cvName = '';
+  const cvFile = document.getElementById('cv-input').files[0];
+  if (cvFile) {
+    cvBase64 = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(',')[1]);
+      r.readAsDataURL(cvFile);
+    });
+    cvName = cvFile.name;
+  }
+
   const payload = {
     name, phone, email, location,
     q1: yn.q1 || '', q2: yn.q2 || '', q3: yn.q3 || '',
     q4: yn.q4 || '', q5: yn.q5 || '',
-    open1, open2, open3, open4
+    open1, open2, open3, open4, linkedin,
+    cv_base64: cvBase64, cv_filename: cvName
   };
 
   try {
