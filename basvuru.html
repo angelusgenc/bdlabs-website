@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BD Labs – Saha Satış Başvurusu</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #07070f;
+    color: #f0f0ff;
+    min-height: 100vh;
+    padding: 48px 16px 80px;
+  }
+
+  .page { max-width: 620px; margin: 0 auto; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 999px; font-size: 12px; color: #a78bfa;
+    padding: 4px 14px; margin-bottom: 20px; font-weight: 500;
+  }
+
+  .hero { margin-bottom: 36px; }
+  .hero h1 { font-size: 28px; font-weight: 800; color: #f0f0ff; margin-bottom: 8px; line-height: 1.2; }
+  .hero p { font-size: 15px; color: #9898b8; line-height: 1.6; }
+
+  .card {
+    background: #0d0d1c;
+    border: 1px solid #1e1e3a;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 11px; font-weight: 700; color: #a78bfa;
+    text-transform: uppercase; letter-spacing: .08em;
+    margin-bottom: 16px;
+  }
+
+  .desc-text { font-size: 15px; color: #c8c8e8; line-height: 1.7; margin-bottom: 12px; }
+  .desc-text:last-child { margin-bottom: 0; }
+
+  .model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .model-item { background: #13132a; border-radius: 10px; padding: 12px 14px; }
+  .model-item .lbl { font-size: 11px; color: #6666aa; margin-bottom: 4px; }
+  .model-item .val { font-size: 13px; font-weight: 600; color: #e0e0ff; line-height: 1.4; }
+  .model-item.accent { background: rgba(22,163,74,0.12); border: 1px solid rgba(22,163,74,0.25); grid-column: 1 / -1; }
+  .model-item.accent .lbl { color: #4ade80; }
+  .model-item.accent .val { color: #bbf7d0; }
+
+  .divider { height: 1px; background: #1e1e3a; margin: 28px 0; }
+
+  .form-title { font-size: 20px; font-weight: 700; color: #f0f0ff; margin-bottom: 6px; }
+  .form-sub { font-size: 14px; color: #6666aa; margin-bottom: 28px; }
+
+  .field-label {
+    display: block; font-size: 12px; font-weight: 700;
+    color: #6666aa; text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+
+  input[type="text"], input[type="email"], input[type="tel"], textarea {
+    width: 100%; background: #0d0d1c; border: 1px solid #1e1e3a;
+    border-radius: 10px; padding: 11px 14px; font-size: 14px;
+    color: #f0f0ff; font-family: inherit; transition: border-color .15s;
+    outline: none;
+  }
+  input:focus, textarea:focus { border-color: #7c3aed; }
+  input::placeholder, textarea::placeholder { color: #44445a; }
+  textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+
+  .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field { margin-bottom: 12px; }
+
+  .yn-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 4px; }
+  .yn-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; background: #0d0d1c; border: 1px solid #1e1e3a;
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .yn-q { font-size: 14px; color: #c8c8e8; flex: 1; line-height: 1.4; }
+  .yn-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .yn-btn {
+    border: 1px solid #2a2a4a; background: transparent;
+    border-radius: 8px; padding: 5px 16px; font-size: 13px;
+    cursor: pointer; color: #9898b8; font-family: inherit;
+    transition: all .15s;
+  }
+  .yn-btn:hover { background: #13132a; }
+  .yn-btn.yes { background: rgba(22,163,74,0.15); border-color: rgba(74,222,128,0.4); color: #4ade80; font-weight: 600; }
+  .yn-btn.no  { background: rgba(220,38,38,0.12); border-color: rgba(248,113,113,0.4); color: #f87171; font-weight: 600; }
+
+  .open-list { display: flex; flex-direction: column; gap: 16px; }
+  .open-q label { display: block; font-size: 14px; font-weight: 600; color: #e0e0ff; margin-bottom: 4px; line-height: 1.5; }
+  .open-q .hint { font-size: 12px; color: #6666aa; margin-bottom: 8px; }
+
+  .submit-btn {
+    width: 100%; padding: 15px; margin-top: 24px;
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    border: none; border-radius: 12px; font-size: 15px;
+    font-weight: 700; color: #fff; cursor: pointer;
+    font-family: inherit; transition: opacity .15s, transform .1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .submit-btn:hover { opacity: .9; }
+  .submit-btn:active { transform: scale(.98); }
+  .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  .success {
+    display: none; text-align: center; padding: 48px 24px;
+  }
+  .success .icon { font-size: 48px; margin-bottom: 16px; }
+  .success h2 { font-size: 22px; font-weight: 800; color: #4ade80; margin-bottom: 10px; }
+  .success p { font-size: 15px; color: #9898b8; line-height: 1.6; }
+
+  .error-msg { font-size: 13px; color: #f87171; margin-top: 12px; display: none; text-align: center; }
+
+  @media (max-width: 480px) {
+    .input-grid { grid-template-columns: 1fr; }
+    .model-grid { grid-template-columns: 1fr; }
+    .model-item.accent { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <div class="hero">
+    <h1>Saha Satış &amp; İş Geliştirme Temsilcisi</h1>
+    <p>BD Labs — yapay zeka destekli sesli randevu asistanı</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hakkımızda</div>
+    <p class="desc-text">BD Labs olarak yapay zeka destekli sesli randevu asistanı ve işletme otomasyon sistemleri geliştiriyoruz.</p>
+    <p class="desc-text">Kuaförler, klinikler, güzellik merkezleri, veterinerler ve randevu sistemiyle çalışan işletmelere yönelik çözümler sunuyoruz.</p>
+    <p class="desc-text">Şu an özellikle sahada aktif çalışabilecek, insan ilişkileri güçlü ve satış tarafında özgüvenli ekip arkadaşları arıyoruz.</p>
+    <p class="desc-text" style="color:#6666aa; font-size:14px;">Bu pozisyon klasik masa başı veya sadece maaş odaklı bir iş değildir. Sahada aktif olabilecek, işletmelerle birebir iletişim kurabilecek kişiler önceliklidir.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Çalışma modeli</div>
+    <div class="model-grid">
+      <div class="model-item">
+        <div class="lbl">İlk 3 ay</div>
+        <div class="val">Part-time / saha odaklı, esnek</div>
+      </div>
+      <div class="model-item">
+        <div class="lbl">3. ay sonunda</div>
+        <div class="val">Full-time pozisyona geçiş</div>
+      </div>
+      <div class="model-item">
+        <div class="lbl">Ücret</div>
+        <div class="val">Sabit maaş + kurulum primi + aylık komisyon</div>
+      </div>
+      <div class="model-item">
+        <div class="lbl">Uzun vade</div>
+        <div class="val">Ekip büyüdükçe bölge sorumluluğu</div>
+      </div>
+      <div class="model-item accent">
+        <div class="lbl">Tercih edilen profil</div>
+        <div class="val">Saha satış deneyimi · Kendi aracı olan · İnsan ilişkileri güçlü · Teknolojiye ilgili</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div id="form-wrapper">
+    <p class="form-title">Başvuru formu</p>
+    <p class="form-sub">Tüm alanları doldurun. Ciddi başvurular değerlendirilir.</p>
+
+    <div class="card">
+      <div class="card-title">Kişisel bilgiler</div>
+      <div class="input-grid">
+        <div class="field">
+          <label class="field-label">Ad Soyad</label>
+          <input type="text" id="name" placeholder="Adınız Soyadınız" />
+        </div>
+        <div class="field">
+          <label class="field-label">Telefon</label>
+          <input type="tel" id="phone" placeholder="05xx xxx xx xx" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">E-posta</label>
+        <input type="email" id="email" placeholder="ornek@mail.com" />
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label class="field-label">İlçe / Semt</label>
+        <input type="text" id="location" placeholder="Bodrum, Milas, Fethiye..." />
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Hızlı sorular</div>
+      <div class="yn-list">
+        <div class="yn-row">
+          <span class="yn-q">Daha önce aktif saha satışı yaptınız mı?</span>
+          <div class="yn-btns">
+            <button class="yn-btn" data-q="q1" data-v="yes" onclick="selectYN(this)">Evet</button>
+            <button class="yn-btn" data-q="q1" data-v="no"  onclick="selectYN(this)">Hayır</button>
+          </div>
+        </div>
+        <div class="yn-row">
+          <span class="yn-q">Kendi aracınız var mı?</span>
+          <div class="yn-btns">
+            <button class="yn-btn" data-q="q2" data-v="yes" onclick="selectYN(this)">Evet</button>
+            <button class="yn-btn" data-q="q2" data-v="no"  onclick="selectYN(this)">Hayır</button>
+          </div>
+        </div>
+        <div class="yn-row">
+          <span class="yn-q">İnsanlarla yüz yüze iletişimde kendinize güveniyor musunuz?</span>
+          <div class="yn-btns">
+            <button class="yn-btn" data-q="q3" data-v="yes" onclick="selectYN(this)">Evet</button>
+            <button class="yn-btn" data-q="q3" data-v="no"  onclick="selectYN(this)">Hayır</button>
+          </div>
+        </div>
+        <div class="yn-row">
+          <span class="yn-q">Sabit maaş + prim odaklı çalışma modeline uygun musunuz?</span>
+          <div class="yn-btns">
+            <button class="yn-btn" data-q="q4" data-v="yes" onclick="selectYN(this)">Evet</button>
+            <button class="yn-btn" data-q="q4" data-v="no"  onclick="selectYN(this)">Hayır</button>
+          </div>
+        </div>
+        <div class="yn-row">
+          <span class="yn-q">Haftada en az birkaç gün aktif saha ziyareti yapabilir misiniz?</span>
+          <div class="yn-btns">
+            <button class="yn-btn" data-q="q5" data-v="yes" onclick="selectYN(this)">Evet</button>
+            <button class="yn-btn" data-q="q5" data-v="no"  onclick="selectYN(this)">Hayır</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="card-title">Açık sorular</div>
+      <div class="open-list">
+        <div class="open-q">
+          <label>Daha önce bir işletme sahibini ikna ettiğiniz bir satışı anlatın.</label>
+          <div class="hint">Ne sattınız, nasıl kapattınız?</div>
+          <textarea id="open1" placeholder="Yanıtınızı buraya yazın..."></textarea>
+        </div>
+        <div class="open-q">
+          <label>Haftada kaç işletmeyi ziyaret edebilirsiniz? Hangi ilçelerde aktif olabilirsiniz?</label>
+          <textarea id="open2" placeholder="Yanıtınızı buraya yazın..." style="min-height:70px"></textarea>
+        </div>
+        <div class="open-q">
+          <label>Bir işletme sahibi "bütçemiz yok" dese ne yaparsınız?</label>
+          <textarea id="open3" placeholder="Yanıtınızı buraya yazın..."></textarea>
+        </div>
+        <div class="open-q">
+          <label>Yapay zeka destekli sesli randevu asistanımızı hangi tür işletmelere satmak en kolay olur? Neden?</label>
+          <textarea id="open4" placeholder="Yanıtınızı buraya yazın..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitForm()">
+      <span id="btn-text">Başvuruyu Gönder →</span>
+    </button>
+    <p class="error-msg" id="error-msg"></p>
+  </div>
+
+  <div class="success" id="success-msg">
+    <div class="icon">✅</div>
+    <h2>Başvurunuz alındı!</h2>
+    <p>En kısa sürede sizinle iletişime geçeceğiz.<br>BD Labs ekibi</p>
+  </div>
+
+</div>
+
+<script>
+const yn = {};
+
+function selectYN(btn) {
+  const q = btn.dataset.q;
+  const v = btn.dataset.v;
+  btn.parentElement.querySelectorAll('.yn-btn').forEach(b => {
+    b.classList.remove('yes', 'no');
+  });
+  btn.classList.add(v);
+  yn[q] = v;
+}
+
+async function submitForm() {
+  const name     = document.getElementById('name').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const open1    = document.getElementById('open1').value.trim();
+  const open2    = document.getElementById('open2').value.trim();
+  const open3    = document.getElementById('open3').value.trim();
+  const open4    = document.getElementById('open4').value.trim();
+
+  const errEl = document.getElementById('error-msg');
+  errEl.style.display = 'none';
+
+  if (!name || !phone) {
+    errEl.textContent = 'Ad soyad ve telefon alanları zorunludur.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  btn.disabled = true;
+  btnText.textContent = 'Gönderiliyor...';
+
+  const payload = {
+    name, phone, email, location,
+    q1: yn.q1 || '', q2: yn.q2 || '', q3: yn.q3 || '',
+    q4: yn.q4 || '', q5: yn.q5 || '',
+    open1, open2, open3, open4
+  };
+
+  try {
+    const res = await fetch('https://eceaiappointment-production.up.railway.app/api/job-application', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('form-wrapper').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    } else {
+      throw new Error(data.error || 'Sunucu hatası');
+    }
+  } catch (err) {
+    errEl.textContent = 'Bir hata oluştu, lütfen tekrar deneyin.';
+    errEl.style.display = 'block';
+    btn.disabled = false;
+    btnText.textContent = 'Başvuruyu Gönder →';
+  }
+}
+</script>
+
+</body>
+</html>
