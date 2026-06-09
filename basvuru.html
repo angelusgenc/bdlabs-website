@@ -310,7 +310,7 @@ const yn = {};
 function selectYN(btn) {
   const q = btn.dataset.q;
   const v = btn.dataset.v;
-  btn.parentElement.querySelectorAll('.yn-btn').forEach(b => {
+  document.querySelectorAll('[data-q="' + q + '"]').forEach(b => {
     b.classList.remove('yes', 'no');
   });
   btn.classList.add(v);
